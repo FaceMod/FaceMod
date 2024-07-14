@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "facemod",
+  "version": "1.0.0",
+  "name": "FaceMod",
+  "description": "A utility mod for FaceLand Server",
+  "icon": "assets/facemod/icon.png",
+  "authors": [
+    "vjh0107",
+    "RelativeSpade"
+  ],
+  "contact": {
+    "homepage": "https://github.com/FaceMod/",
+    "sources": "https://github.com/FaceMod/FaceMod/"
+  },
+  "license": "BSD License",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "io.github.facemod.FaceModInitializer"
+    ]
+  },
+  "mixins": [
+    {
+      "config": "facemod.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.10",
+    "minecraft": "~1.20.4",
+    "java": ">=17",
+    "fabric-api": "*"
+  }
+}

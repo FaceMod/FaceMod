@@ -17,7 +17,7 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "io.github.facemod.FaceModInitializer"
+      "facemod.FaceModInitializer"
     ]
   },
   "mixins": [

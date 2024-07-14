@@ -1,4 +1,4 @@
-package io.github.facemod;
+package facemod;
 
 import net.fabricmc.api.ClientModInitializer;
 import org.slf4j.Logger;

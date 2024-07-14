@@ -7,7 +7,7 @@ tasks.withType<net.fabricmc.loom.task.AbstractRemapJarTask> {
     archiveVersion = ""
 }
 
-group = "io.github.facemod"
+group = "main.java.facemod"
 version = "1.0.0-SNAPSHOT"
 
 dependencies {

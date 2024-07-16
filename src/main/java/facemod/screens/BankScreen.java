@@ -8,8 +8,10 @@ import net.minecraft.text.Text;
 
 public class BankScreen extends Screen {
     private static final int SLOT_SIZE = 18;
-    private static final int ROWS = 5;
-    private static final int COLUMNS = 9;
+    private static final int ROWS = 2; // 2 rows of chest grids
+    private static final int COLUMNS = 3; // 3 columns of chest grids
+    private static final int GRID_WIDTH = COLUMNS * (SLOT_SIZE * 9 + 5) - 5; // Total width of grids including spacing
+    private static final int GRID_HEIGHT = ROWS * (SLOT_SIZE * 5 + 5) - 5; // Total height of grids including spacing
 
     public BankScreen() {
         super(Text.literal("Bank"));
@@ -17,7 +19,6 @@ public class BankScreen extends Screen {
 
     @Override
     protected void init() {
-
         ButtonWidget button1 = ButtonWidget.builder(Text.literal("Button 1"), button -> System.out.println("You clicked button1!"))
                 .dimensions(width / 2 - 205, 20, 200, 20)
                 .tooltip(Tooltip.of(Text.literal("Tooltip of button1")))
@@ -27,21 +28,30 @@ public class BankScreen extends Screen {
                 .tooltip(Tooltip.of(Text.literal("Tooltip of button2")))
                 .build();
 
-        addDrawableChild(button1);
-        addDrawableChild(button2);
-
+        //addDrawableChild(button1);
+        //addDrawableChild(button2);
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         renderBackground(context, mouseX, mouseY, delta);
         super.render(context, mouseX, mouseY, delta);
-        drawChestGrid(context, width / 2 - (COLUMNS * SLOT_SIZE) / 2, height / 2 - (ROWS * SLOT_SIZE) / 2);
+
+        // Calculate the starting position to center the grids
+        int startX = (width - GRID_WIDTH) / 2;
+        int startY = (height - GRID_HEIGHT) / 2;
+
+        // Draw the chest grids
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLUMNS; col++) {
+                drawChestGrid(context, startX + col * (SLOT_SIZE * 9 + 5), startY + row * (SLOT_SIZE * 5 + 5));
+            }
+        }
     }
 
     private void drawChestGrid(DrawContext context, int startX, int startY) {
-        for (int row = 0; row < ROWS; row++) {
-            for (int col = 0; col < COLUMNS; col++) {
+        for (int row = 0; row < 5; row++) { // Each chest grid is 5 rows
+            for (int col = 0; col < 9; col++) { // Each chest grid is 9 columns
                 int x = startX + col * SLOT_SIZE;
                 int y = startY + row * SLOT_SIZE;
                 context.fill(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0xFF000000);
@@ -50,4 +60,3 @@ public class BankScreen extends Screen {
         }
     }
 }
-

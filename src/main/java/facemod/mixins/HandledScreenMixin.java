@@ -11,6 +11,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Objects;
+
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin {
     @Unique
@@ -22,15 +24,16 @@ public abstract class HandledScreenMixin {
         HandledScreen<?> handledScreen = (HandledScreen<?>) (Object) this;
         Text screenTitle = handledScreen.getTitle();
 
-        System.out.println("Container Name: " + screenTitle.getString());
+        //System.out.println("Container Name: " + screenTitle.getString());
         //TODO: Replace this hard coded unicode character with class.
         if (screenTitle.getString().contains("拴")) {
             System.out.println("Bank Opened");
 
             hideOriginalGui = true;
+
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
-            minecraftClient.setScreen(new BankScreen());
+            minecraftClient.setScreen(new BankScreen(handledScreen.getScreenHandler(), Objects.requireNonNull(MinecraftClient.getInstance().player).getInventory(),Text.literal("Bank Test")));
 
         }
     }

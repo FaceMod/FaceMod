@@ -4,8 +4,10 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 
 import java.util.Objects;
@@ -22,6 +24,8 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
     private static final int INVENTORY_HEIGHT = INVENTORY_ROWS * SLOT_SIZE;
     ButtonWidget guildVaultButton = null;
     ButtonWidget personalVaultButton = null;
+    private boolean buttonPressed = false;
+    public ClientPlayerInteractionManager interactionManager = null;
 
 
     public BankScreen(ScreenHandler handler, PlayerInventory inventory, Text title) {
@@ -49,20 +53,38 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
     protected void init() {
         System.out.println("Bank Screen");
 
+        interactionManager = client.interactionManager;
+
         int startX = (width - GRID_WIDTH) / 2;
         int startY = (height - GRID_HEIGHT) / 2;
 
         int buttonY = startY + GRID_HEIGHT + 5;
 
-        guildVaultButton = ButtonWidget.builder(Text.literal("PV"), button -> {
-                    // Action for Guild Vault button
+        personalVaultButton = ButtonWidget.builder(Text.literal("PV"), button -> {
+                    // Action for Personal Vault button
+                    if (!buttonPressed) {
+                        System.out.println("personalVaultButton");
+                        buttonPressed = true;
+                        interactionManager.clickSlot(handler.syncId, 12, 0, SlotActionType.PICKUP, client.player);
+                        personalVaultButton.active = false;
+                    } else {
+                        System.out.println("test");
+                    }
                 })
                 .dimensions(startX, buttonY, SLOT_SIZE, SLOT_SIZE)
                 .tooltip(Tooltip.of(Text.literal("Personal Vault")))
                 .build();
 
-        personalVaultButton = ButtonWidget.builder(Text.literal("GV"), button -> {
-                    // Action for Personal Vault button
+        guildVaultButton = ButtonWidget.builder(Text.literal("GV"), button -> {
+                    // Action for Guild Vault button
+                    if (!buttonPressed) {
+                        System.out.println("guildVaultButton");
+                        buttonPressed = true;
+                        interactionManager.clickSlot(handler.syncId, 16, 0, SlotActionType.PICKUP, client.player);
+                        guildVaultButton.active = false;
+                    } else {
+                        System.out.println("test");
+                    }
                 })
                 .dimensions(startX + SLOT_SIZE, buttonY, SLOT_SIZE, SLOT_SIZE)
                 .tooltip(Tooltip.of(Text.literal("Guild Vault")))
@@ -70,6 +92,16 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
         addDrawableChild(guildVaultButton);
         addDrawableChild(personalVaultButton);
+
+        if(this.title != null && this.title.getString().contains("拽")){
+            buttonPressed = true;
+            personalVaultButton.active = false;
+        }
+
+        if(this.title != null && this.title.getString().contains("抭")) {
+            buttonPressed = true;
+            guildVaultButton.active = false;
+        }
     }
 
     @Override
@@ -92,6 +124,8 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
         guildVaultButton.render(context, mouseX, mouseY, delta);
         personalVaultButton.render(context, mouseX, mouseY, delta);
+
+        //super.render(context,mouseX,mouseY,delta);
 
     }
 
@@ -116,10 +150,8 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
         if (this.client != null && this.client.player != null) {
             inventory = this.client.player.getInventory();
         } else {
-
             System.err.println("inventory should not be null");
         }
-
 
         for (int row = 0; row < INVENTORY_ROWS; row++) {
             for (int col = 0; col < INVENTORY_COLUMNS; col++) {
@@ -143,6 +175,19 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                     int slotY = y + 1;
 
                     context.drawItem(inventory.getStack(index), slotX, slotY);
+
+                    int count = inventory.getStack(index).getCount();
+
+                    if (count > 1) {
+                        String countText = String.valueOf(count);
+                        int tempX = slotX + SLOT_SIZE - 1 - this.client.textRenderer.getWidth(countText);
+                        int tempY = slotY + SLOT_SIZE - 1 - this.client.textRenderer.fontHeight;
+
+                        Text text = Text.literal(countText);
+
+                        context.drawText(client.textRenderer, text, tempX, tempY, 0xFFFFFFFF, true);
+
+                    }
 
                     if (mouseX >= slotX && mouseX <= slotX + SLOT_SIZE && mouseY >= slotY && mouseY <= slotY + SLOT_SIZE) {
                         context.fillGradient(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0x80FFFFFF, 0x80FFFFFF);

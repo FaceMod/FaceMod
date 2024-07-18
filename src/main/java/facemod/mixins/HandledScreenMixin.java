@@ -26,14 +26,13 @@ public abstract class HandledScreenMixin {
 
         //System.out.println("Container Name: " + screenTitle.getString());
         //TODO: Replace this hard coded unicode character with class.
-        if (screenTitle.getString().contains("拴")) {
-            System.out.println("Bank Opened");
+        if (screenTitle.getString().contains("拴") || screenTitle.getString().contains("拽") || screenTitle.getString().contains("抭")) {
 
             hideOriginalGui = true;
 
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
-            minecraftClient.setScreen(new BankScreen(handledScreen.getScreenHandler(), Objects.requireNonNull(MinecraftClient.getInstance().player).getInventory(),Text.literal("Bank Test")));
+            minecraftClient.setScreen(new BankScreen(handledScreen.getScreenHandler(), Objects.requireNonNull(MinecraftClient.getInstance().player).getInventory(),screenTitle));
 
         }
     }

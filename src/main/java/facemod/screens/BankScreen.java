@@ -182,7 +182,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
         }
 
         Identifier INVENTORY_BACKGROUND = Identifier.of("minecraft", "textures/gui/container/inventory.png");
-        context.drawTexture(INVENTORY_BACKGROUND, startX-7, startY-3, 0,79,256,175);
+        context.drawTexture(INVENTORY_BACKGROUND, startX-7, startY-3, 0,80,256,85);
 
         for (int row = 0; row < INVENTORY_ROWS; row++) {
             for (int col = 0; col < INVENTORY_COLUMNS; col++) {

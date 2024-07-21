@@ -37,7 +37,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
     private static boolean doTabSwitch = false;
     private int currentTab = 0;
     private static long lastUpdateTime = 0;
-    private static final long UPDATE_INTERVAL = 10000; // 1000ms = 1s
+    private static final long UPDATE_INTERVAL = 60000; // 1000ms = 1s
     private static final Map<Integer, List<ItemStack>> allTabItems = new HashMap<>();
     ButtonWidget guildVaultButton = null;
     ButtonWidget personalVaultButton = null;
@@ -119,7 +119,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         drawBackground(context, delta, mouseX, mouseY);
 
-        super.render(context,mouseX,mouseY,delta);
+        //super.render(context,mouseX,mouseY,delta); // <-- Uncomment to view original inventory
 
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastUpdateTime >= UPDATE_INTERVAL) {
@@ -337,14 +337,12 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
     private void collectItemsFromCurrentTab(int tabIndex) {
         List<ItemStack> items = new ArrayList<>();
 
-        System.out.println("collect items: " + handler.toString());
         for (int j = 9; j < handler.slots.size(); j++) {
             Slot slot = handler.slots.get(j);
             items.add(slot.getStack());
         }
 
         allTabItems.put(tabIndex, items);
-        System.out.println(tabIndex + " after : " + items);
     }
 
     @Override

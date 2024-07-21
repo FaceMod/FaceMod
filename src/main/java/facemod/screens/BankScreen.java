@@ -282,7 +282,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                     sendClickSlotPacket(tabIndex, SlotActionType.PICKUP);
 
                     try {
-                        Thread.sleep(100); // <-- Recomended is 100, anything below has a small chance of skipping less than 50 and will skip pages -Spade
+                        Thread.sleep(100); // <-- Recommended is 100, anything below has a small chance of skipping less than 50 and will skip pages -Spade
                     } catch (InterruptedException e) {
                         System.err.println("sleep failed");
                     }

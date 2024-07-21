@@ -80,6 +80,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                         personalVaultButton.active = false;
                     } else {
                         //TODO: Implement swapping logic
+                        System.out.println("Coming Soon");
                     }
                 })
                 .dimensions(startX, buttonY, SLOT_SIZE, SLOT_SIZE)
@@ -94,6 +95,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                         guildVaultButton.active = false;
                     } else {
                         //TODO: Implement swapping logic
+                        System.out.println("Coming Soon");
                     }
                 })
                 .dimensions(startX + SLOT_SIZE, buttonY, SLOT_SIZE, SLOT_SIZE)

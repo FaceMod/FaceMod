@@ -254,10 +254,11 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
                     if (mouseX >= slotX && mouseX <= slotX + SLOT_SIZE && mouseY >= slotY && mouseY <= slotY + SLOT_SIZE) {
                         context.fillGradient(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0x80FFFFFF, 0x80FFFFFF);
-                        if (!inventory.getStack(index).getItem().getName().getString().equals("Air") && (tooltipItemIndex == -1)) {
-                            context.drawItemTooltip(this.client.textRenderer, inventory.getStack(index), mouseX, mouseY);
+                        if (!inventory.getStack(index).getName().getString().equals("Air") && (tooltipItemIndex == -1 || index == tooltipItemIndex)) {
                             tooltipItemIndex = index;
-                        } else if (inventory.getStack(index).getItem().getName().getString().equals("Air")){
+                            context.drawItemTooltip(Objects.requireNonNull(this.client).textRenderer, inventory.getStack(index), mouseX, mouseY);
+
+                        } else if (inventory.getStack(index).getName().getString().equals("Air") || index != tooltipItemIndex){
                             tooltipItemIndex = -1;
                         }
                     }
@@ -309,7 +310,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
         }
 
         Packet<?> packet = new ClickSlotC2SPacket(
-                syncId,                    // Synchronization ID
+                syncId,                // Synchronization ID
                 0,                    // Revision value
                 slotIndex,           // The index of the slot being interacted with
                 0,                  // Button value (0 = LEFT_MOUSE, 1 = RIGHT_MOUSE)

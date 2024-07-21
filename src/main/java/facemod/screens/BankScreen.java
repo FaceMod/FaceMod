@@ -24,29 +24,45 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class BankScreen extends HandledScreen<ScreenHandler> {
+    // Tooltip and Sync IDs
     private int tooltipItemIndex = -1;
     private static int syncId = -1;
+
+    // Slot and Grid Dimensions
     private static final int SLOT_SIZE = 18;
     private static final int ROWS = 3;
     private static final int COLUMNS = 3;
     private static final int GRID_WIDTH = COLUMNS * (SLOT_SIZE * 9 + 5) - 5;
     private static final int GRID_HEIGHT = ROWS * (SLOT_SIZE * 5 + 5) - 5;
+
+    // Inventory Dimensions
     private static final int INVENTORY_ROWS = 4;
     private static final int INVENTORY_COLUMNS = 9;
     private static final int INVENTORY_WIDTH = INVENTORY_COLUMNS * SLOT_SIZE;
+
+    // Tab Management
     private static final int MAX_TABS = 9;
     private static boolean doTabSwitch = false;
     private int currentTab = 0;
+
+    // Timing and Updates
     private static long lastUpdateTime = 0;
     private static final long UPDATE_INTERVAL = 60000; // 1000ms = 1s
+
+    // Item Storage
     private static final Map<Integer, List<ItemStack>> allTabItems = new HashMap<>();
+
+    // UI Components
     ButtonWidget guildVaultButton = null;
     ButtonWidget personalVaultButton = null;
+
+    // State Flags and Task Management
     private boolean buttonPressed = false;
     private final Queue<Runnable> taskQueue = new LinkedBlockingQueue<>();
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private static ScreenHandler handler = null;
     private boolean isProcessing = false;
+
 
     public ClientPlayerInteractionManager interactionManager = null;
 
@@ -179,7 +195,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                         context.drawItem(stack, x + 1, y + 1);
                         context.drawItemInSlot(textRenderer, stack, x + 1, y + 1);
 
-                        if (mouseX >= x + 1 && mouseX <= x + 1 + SLOT_SIZE && mouseY >= y + 1 && mouseY <= y + 1 + SLOT_SIZE ) {
+                        if (isHovered(mouseX,mouseY,x+1,y+1)) {
                             context.fillGradient(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0x80FFFFFF, 0x80FFFFFF);
                             if (!stack.getItem().getName().getString().equals("Air") && (tooltipItemIndex == -1 || index == tooltipItemIndex)) {
                                 tooltipItemIndex = index;
@@ -252,7 +268,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                     context.drawItem(inventory.getStack(index), slotX, slotY);
                     context.drawItemInSlot(textRenderer, inventory.getStack(index), slotX, slotY);
 
-                    if (mouseX >= slotX && mouseX <= slotX + SLOT_SIZE && mouseY >= slotY && mouseY <= slotY + SLOT_SIZE) {
+                    if (isHovered(mouseX,mouseY,slotX,slotY)) {
                         context.fillGradient(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0x80FFFFFF, 0x80FFFFFF);
                         if (!inventory.getStack(index).getName().getString().equals("Air") && (tooltipItemIndex == -1 || index == tooltipItemIndex)) {
                             tooltipItemIndex = index;
@@ -275,6 +291,10 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
         } else {
             currentTab = 0;
         }
+    }
+
+    public boolean isHovered(int mouseX, int mouseY, int x, int y){
+        return (mouseX >= x && mouseX <= x + SLOT_SIZE && mouseY >= y && mouseY <= y + SLOT_SIZE);
     }
 
     private void switchToTab(int tabIndex) {

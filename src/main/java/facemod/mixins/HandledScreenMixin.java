@@ -16,6 +16,8 @@ import java.util.Objects;
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin {
     @Unique
+    private boolean CUSTOM_BANK = true;
+    @Unique
     private boolean hideOriginalGui = false;
 
     @Inject(method = "init", at = @At("TAIL"))
@@ -24,16 +26,16 @@ public abstract class HandledScreenMixin {
         HandledScreen<?> handledScreen = (HandledScreen<?>) (Object) this;
         Text screenTitle = handledScreen.getTitle();
 
-        //System.out.println("Container Name: " + screenTitle.getString());
         //TODO: Replace this hard coded unicode character with class.
-        if (screenTitle.getString().contains("拴") || screenTitle.getString().contains("拽") || screenTitle.getString().contains("抭")) {
+        if(CUSTOM_BANK) {
+            if (screenTitle.getString().contains("拴") || screenTitle.getString().contains("拽") || screenTitle.getString().contains("抭")) {
+                hideOriginalGui = true;
 
-            hideOriginalGui = true;
+                MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
-            MinecraftClient minecraftClient = MinecraftClient.getInstance();
+                minecraftClient.setScreen(new BankScreen(handledScreen.getScreenHandler(), Objects.requireNonNull(MinecraftClient.getInstance().player).getInventory(), screenTitle));
 
-            minecraftClient.setScreen(new BankScreen(handledScreen.getScreenHandler(), Objects.requireNonNull(MinecraftClient.getInstance().player).getInventory(),screenTitle));
-
+            }
         }
     }
 
@@ -44,3 +46,4 @@ public abstract class HandledScreenMixin {
         }
     }
 }
+

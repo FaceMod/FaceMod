@@ -1,21 +1,30 @@
 package facemod.screens;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class BankScreen extends HandledScreen<ScreenHandler> {
+    private static int syncId = -1;
     private static final int SLOT_SIZE = 18;
     private static final int ROWS = 3;
     private static final int COLUMNS = 3;
@@ -24,14 +33,26 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
     private static final int INVENTORY_ROWS = 4;
     private static final int INVENTORY_COLUMNS = 9;
     private static final int INVENTORY_WIDTH = INVENTORY_COLUMNS * SLOT_SIZE;
+    private static final int MAX_TABS = 9;
+    private static boolean doTabSwitch = false;
+    private int currentTab = 0;
+    private static long lastUpdateTime = 0;
+    private static final long UPDATE_INTERVAL = 10000; // 1000ms = 1s
+    private static final Map<Integer, List<ItemStack>> allTabItems = new HashMap<>();
     ButtonWidget guildVaultButton = null;
     ButtonWidget personalVaultButton = null;
     private boolean buttonPressed = false;
-    public ClientPlayerInteractionManager interactionManager = null;
+    private final Queue<Runnable> taskQueue = new LinkedBlockingQueue<>();
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private static ScreenHandler handler = null;
+    private boolean isProcessing = false;
 
+    public ClientPlayerInteractionManager interactionManager = null;
 
     public BankScreen(ScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
+        BankScreen.syncId = handler.syncId;
+        BankScreen.handler = handler;
     }
 
     @Override
@@ -42,9 +63,11 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
     @Override
     protected void init() {
+        doTabSwitch = true;
+
         interactionManager = Objects.requireNonNull(client).interactionManager;
 
-        int startX = ((width - GRID_WIDTH) / 2) - 5;
+        int startX = ((width - GRID_WIDTH) / 2) - 4;
         int startY = ((height - GRID_HEIGHT) / 2) - 75;
 
         int buttonY = startY + GRID_HEIGHT + 5;
@@ -53,7 +76,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                     // Action for Personal Vault button
                     if (!buttonPressed) {
                         buttonPressed = true;
-                        interactionManager.clickSlot(handler.syncId, 12, 0, SlotActionType.PICKUP, client.player);
+                        interactionManager.clickSlot(syncId, 12, 0, SlotActionType.PICKUP, client.player);
                         personalVaultButton.active = false;
                     } else {
                         //TODO: Implement swapping logic
@@ -67,7 +90,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                     // Action for Guild Vault button
                     if (!buttonPressed) {
                         buttonPressed = true;
-                        interactionManager.clickSlot(handler.syncId, 16, 0, SlotActionType.PICKUP, client.player);
+                        interactionManager.clickSlot(syncId, 16, 0, SlotActionType.PICKUP, client.player);
                         guildVaultButton.active = false;
                     } else {
                         //TODO: Implement swapping logic
@@ -89,33 +112,48 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
             buttonPressed = true;
             guildVaultButton.active = false;
         }
+
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        drawBackground(context,delta, mouseX,mouseY);
+        drawBackground(context, delta, mouseX, mouseY);
+
+        super.render(context,mouseX,mouseY,delta);
+
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastUpdateTime >= UPDATE_INTERVAL) {
+            if(this.title != null && !this.title.getString().contains("拴")) {
+                updateTabs();
+                lastUpdateTime = currentTime;
+            }
+        }
 
         int startX = (width - GRID_WIDTH) / 2;
         int startY = (height - GRID_HEIGHT) / 2;
 
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {
-                drawChestGrid(context, startX + (col) * (SLOT_SIZE * 9 + 5)+2, (startY + (row) * (SLOT_SIZE * 5 + 5)+2)-100, mouseX, mouseY, col, row);
+                drawChestGrid(context, startX + (col) * (SLOT_SIZE * 9 + 5) + 2, (startY + (row) * (SLOT_SIZE * 5 + 5) + 2) - 100, mouseX, mouseY, col, row);
             }
         }
 
         int inventoryStartX = (width - INVENTORY_WIDTH) / 2;
         int inventoryStartY = startY + GRID_HEIGHT + 5;
-        renderInventory(context, inventoryStartX+12, inventoryStartY-75, mouseX, mouseY);
+        renderInventory(context, inventoryStartX + 12, inventoryStartY - 75, mouseX, mouseY);
 
         guildVaultButton.render(context, mouseX, mouseY, delta);
         personalVaultButton.render(context, mouseX, mouseY, delta);
-
-        //super.render(context,mouseX,mouseY,delta);
-
     }
 
     private void drawChestGrid(DrawContext context, int startX, int startY, int mouseX, int mouseY, int offsetX, int offsetY) {
+        int tabIndex = offsetX + (offsetY * 3);
+        List<ItemStack> items = allTabItems.get(tabIndex);
+
+        if(items == null){
+            items = Collections.emptyList();
+        }
+
         Identifier INVENTORY_BACKGROUND = Identifier.of("minecraft", "textures/gui/container/generic_54.png");
 
         // Top + Grid
@@ -132,24 +170,20 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                 context.fill(x + 1, y + 1, x + SLOT_SIZE - 1, y + SLOT_SIZE - 1, 0x00000000);
 
                 int index = col + row * 9;
+                if(!this.title.getString().contains("拴")) {
+                    if (index < items.size()) {
+                        ItemStack stack = items.get(index);
+                        context.drawItem(stack, x + 1, y + 1);
+                        context.drawItemInSlot(textRenderer, stack, x + 1, y + 1);
 
-
-                if (!this.title.getString().contains("拴")) {
-                    if (index < handler.slots.size()) {
-                        Slot slot = handler.slots.get(index);
-                        int slotX = x + 1;
-                        int slotY = y + 1;
-
-                        context.drawItem(slot.getStack(), slotX, slotY);
-                        context.drawItemInSlot(textRenderer, slot.getStack(), slotX, slotY);
-
-                        if (mouseX >= slotX && mouseX <= slotX + SLOT_SIZE && mouseY >= slotY && mouseY <= slotY + SLOT_SIZE) {
+                        if (mouseX >= x + 1 && mouseX <= x + 1 + SLOT_SIZE && mouseY >= y + 1 && mouseY <= y + 1 + SLOT_SIZE) {
                             context.fillGradient(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0x80FFFFFF, 0x80FFFFFF);
-                            if (!slot.getStack().getItem().getName().getString().equals("Air")) {
-                                context.drawItemTooltip(Objects.requireNonNull(this.client).textRenderer, slot.getStack(), mouseX, mouseY);
+                            if (!stack.getItem().getName().getString().equals("Air")) {
+                                context.drawItemTooltip(Objects.requireNonNull(this.client).textRenderer, stack, mouseX, mouseY);
                             }
                         }
                     }
+
                 } else {
                     MatrixStack stack = context.getMatrices();
                     stack.push();
@@ -223,4 +257,99 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
         }
     }
 
+    private void updateTabs() {
+        if (currentTab < MAX_TABS) {
+            switchToTab(currentTab);
+            currentTab++;
+            updateTabs();
+        } else {
+            currentTab = 0;
+        }
+    }
+
+    private void switchToTab(int tabIndex) {
+        if (tabIndex >= 0 && tabIndex < MAX_TABS) {
+            enqueueTask(() -> {
+                    sendClickSlotPacket(tabIndex, SlotActionType.PICKUP);
+
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        System.err.println("sleep failed");
+                    }
+
+                    if (doTabSwitch) {
+                        collectItemsFromCurrentTab(tabIndex);
+                        doTabSwitch = false;
+                    }
+            });
+        }
+    }
+
+    private void sendClickSlotPacket(int slotIndex, SlotActionType actionType) {
+        if (client == null || client.getNetworkHandler() == null) {
+            return;
+        }
+
+        ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
+
+        Int2ObjectArrayMap<ItemStack> modifiedStacks = new Int2ObjectArrayMap<>();
+
+        for (int i = 0; i < handler.slots.size(); i++) {
+            modifiedStacks.put(i, handler.slots.get(i).getStack());
+        }
+
+        Packet<?> packet = new ClickSlotC2SPacket(
+                syncId,                    // Synchronization ID
+                0,                    // Revision value
+                slotIndex,           // The index of the slot being interacted with
+                0,                  // Button value (0 = LEFT_MOUSE, 1 = RIGHT_MOUSE)
+                actionType,        // Action type
+                handler.slots.get(slotIndex).getStack(), // Item stack being interacted with
+                modifiedStacks         // Map of all stacks on page.
+        );
+        networkHandler.sendPacket(packet);
+    }
+
+    private synchronized void enqueueTask(Runnable task) {
+        taskQueue.add(task);
+        if (!isProcessing) {
+            isProcessing = true;
+            processNextTask();
+        }
+    }
+
+    private synchronized void processNextTask() {
+        Runnable task = taskQueue.poll();
+        if (task != null) {
+            executorService.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    processNextTask();
+                }
+            });
+        } else {
+            isProcessing = false;
+        }
+    }
+
+    private void collectItemsFromCurrentTab(int tabIndex) {
+        List<ItemStack> items = new ArrayList<>();
+
+        System.out.println("collect items: " + handler.toString());
+        for (int j = 9; j < handler.slots.size(); j++) {
+            Slot slot = handler.slots.get(j);
+            items.add(slot.getStack());
+        }
+
+        allTabItems.put(tabIndex, items);
+        System.out.println(tabIndex + " after : " + items);
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        executorService.shutdown();
+    }
 }

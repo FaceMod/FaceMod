@@ -12,4 +12,5 @@ public class FaceModInitializer implements ClientModInitializer {
     public void onInitializeClient() {
         logger.info("FaceMod initialized!");
     }
+
 }

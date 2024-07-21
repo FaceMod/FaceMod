@@ -275,7 +275,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                     sendClickSlotPacket(tabIndex, SlotActionType.PICKUP);
 
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(10);
                     } catch (InterruptedException e) {
                         System.err.println("sleep failed");
                     }

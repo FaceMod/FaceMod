@@ -24,6 +24,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class BankScreen extends HandledScreen<ScreenHandler> {
+    private int tooltipItemIndex = -1;
     private static int syncId = -1;
     private static final int SLOT_SIZE = 18;
     private static final int ROWS = 3;
@@ -178,14 +179,17 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                         context.drawItem(stack, x + 1, y + 1);
                         context.drawItemInSlot(textRenderer, stack, x + 1, y + 1);
 
-                        if (mouseX >= x + 1 && mouseX <= x + 1 + SLOT_SIZE && mouseY >= y + 1 && mouseY <= y + 1 + SLOT_SIZE) {
+                        if (mouseX >= x + 1 && mouseX <= x + 1 + SLOT_SIZE && mouseY >= y + 1 && mouseY <= y + 1 + SLOT_SIZE ) {
                             context.fillGradient(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0x80FFFFFF, 0x80FFFFFF);
-                            if (!stack.getItem().getName().getString().equals("Air")) {
+                            if (!stack.getItem().getName().getString().equals("Air") && (tooltipItemIndex == -1 || index == tooltipItemIndex)) {
+                                tooltipItemIndex = index;
                                 context.drawItemTooltip(Objects.requireNonNull(this.client).textRenderer, stack, mouseX, mouseY);
+
+                            } else if (stack.getItem().getName().getString().equals("Air") || index != tooltipItemIndex){
+                                tooltipItemIndex = -1;
                             }
                         }
                     }
-
                 } else {
                     MatrixStack stack = context.getMatrices();
                     stack.push();
@@ -250,8 +254,11 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
                     if (mouseX >= slotX && mouseX <= slotX + SLOT_SIZE && mouseY >= slotY && mouseY <= slotY + SLOT_SIZE) {
                         context.fillGradient(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0x80FFFFFF, 0x80FFFFFF);
-                        if (!inventory.getStack(index).getItem().getName().getString().equals("Air")) {
+                        if (!inventory.getStack(index).getItem().getName().getString().equals("Air") && (tooltipItemIndex == -1)) {
                             context.drawItemTooltip(this.client.textRenderer, inventory.getStack(index), mouseX, mouseY);
+                            tooltipItemIndex = index;
+                        } else if (inventory.getStack(index).getItem().getName().getString().equals("Air")){
+                            tooltipItemIndex = -1;
                         }
                     }
                 }
@@ -275,7 +282,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                     sendClickSlotPacket(tabIndex, SlotActionType.PICKUP);
 
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(100); // <-- Recomended is 100, anything below has a small chance of skipping less than 50 and will skip pages -Spade
                     } catch (InterruptedException e) {
                         System.err.println("sleep failed");
                     }
@@ -351,5 +358,8 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
     public void close() {
         super.close();
         executorService.shutdown();
+        lastUpdateTime = 0;
+        tooltipItemIndex = -1;
+        allTabItems.clear();
     }
 }

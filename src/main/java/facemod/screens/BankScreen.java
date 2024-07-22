@@ -300,7 +300,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
     private void switchToTab(int tabIndex) {
         if (tabIndex >= 0 && tabIndex < MAX_TABS) {
             enqueueTask(() -> {
-                    sendClickSlotPacket(tabIndex, SlotActionType.PICKUP);
+                    sendClickSlotPacket(tabIndex);
 
                     try {
                         Thread.sleep(100); // <-- Recommended is 100, anything below has a small chance of skipping less than 50 and will skip pages -Spade
@@ -316,7 +316,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
         }
     }
 
-    private void sendClickSlotPacket(int slotIndex, SlotActionType actionType) {
+    private void sendClickSlotPacket(int slotIndex) {
         if (client == null || client.getNetworkHandler() == null) {
             return;
         }
@@ -334,7 +334,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                 0,                    // Revision value
                 slotIndex,           // The index of the slot being interacted with
                 0,                  // Button value (0 = LEFT_MOUSE, 1 = RIGHT_MOUSE)
-                actionType,        // Action type
+                SlotActionType.PICKUP,        // Action type
                 handler.slots.get(slotIndex).getStack(), // Item stack being interacted with
                 modifiedStacks         // Map of all stacks on page.
         );

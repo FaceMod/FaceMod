@@ -375,6 +375,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
         allTabItems.put(tabIndex, items);
     }
 
+
     @Override
     public void close() {
         super.close();

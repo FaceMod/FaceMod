@@ -1,6 +1,6 @@
-package facemod.mixins;
+package io.github.facemod.bank.mixins;
 
-import facemod.screens.BankScreen;
+import io.github.facemod.bank.screens.BankScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;

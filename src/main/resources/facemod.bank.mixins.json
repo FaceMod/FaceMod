@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "facemod.mixins",
+  "package": "io.github.facemod.bank.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
     "ClientPlayNetworkHandlerMixin",

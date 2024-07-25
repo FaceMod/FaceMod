@@ -17,12 +17,16 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "facemod.FaceModInitializer"
+      "io.github.facemod.FaceModInitializer"
     ]
   },
   "mixins": [
     {
-      "config": "facemod.mixins.json",
+      "config": "facemod.bank.mixins.json",
+      "environment": "client"
+    },
+    {
+      "config": "facemod.mount.mixins.json",
       "environment": "client"
     }
   ],

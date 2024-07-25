@@ -1,4 +1,4 @@
-package facemod.mixins;
+package io.github.facemod.bank.mixins;
 
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.OpenScreenS2CPacket;

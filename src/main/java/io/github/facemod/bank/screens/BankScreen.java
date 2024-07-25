@@ -1,4 +1,4 @@
-package facemod.screens;
+package io.github.facemod.bank.screens;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.client.gui.DrawContext;

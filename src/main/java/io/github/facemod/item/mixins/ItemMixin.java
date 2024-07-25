@@ -12,12 +12,12 @@ public abstract class ItemMixin {
      * Override the hasGlint method to apply custom glint logic.
      * @return true to apply the glint effect, false otherwise
      * @author IAmSpade
-     * @reason Facegod Asked me.
+     * @reason Faceguy Asked me.
      */
 
-    @Overwrite
+    /*@Overwrite
     public boolean hasGlint(ItemStack stack) {
 
         return true;
-    }
+    }*/ // <- Commented out until faceguy follows up with his request.
 }

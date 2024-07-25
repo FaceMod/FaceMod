@@ -28,8 +28,13 @@
     {
       "config": "facemod.mount.mixins.json",
       "environment": "client"
+    },
+    {
+      "config": "facemod.item.mixins.json",
+      "environment": "client"
     }
   ],
+  "accessWidener": "facemod.accesswidener",
   "depends": {
     "fabricloader": ">=0.15.10",
     "minecraft": "~1.20.4",

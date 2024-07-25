@@ -3,6 +3,8 @@ rootProject.name = "FaceMod"
 pluginManagement {
     repositories {
         maven("https://junhyung.nexus/")
+        maven("https://maven.fabricmc.net/")
+        gradlePluginPortal()
     }
 }
 
@@ -12,5 +14,7 @@ dependencyResolutionManagement {
 
     repositories {
         maven("https://junhyung.nexus/")
+        mavenCentral()
+        maven { url = uri("https://maven.fabricmc.net/") }
     }
 }

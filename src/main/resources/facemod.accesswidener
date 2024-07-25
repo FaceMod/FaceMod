@@ -1,0 +1,11 @@
+accessWidener v1 named
+
+# Classes
+accessible class net/minecraft/client/render/RenderPhase$Texture
+accessible class net/minecraft/client/render/RenderLayer$MultiPhaseParameters
+
+# Methods (if necessary, you can add methods here)
+# accessible method net/minecraft/client/render/SomeClass someMethod (Ljava/lang/String;)V
+
+# Fields (if necessary, you can add fields here)
+# accessible field net/minecraft/client/render/SomeClass someField Ljava/lang/String;

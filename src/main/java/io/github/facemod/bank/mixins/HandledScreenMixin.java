@@ -16,7 +16,7 @@ import java.util.Objects;
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin {
     @Unique
-    private boolean CUSTOM_BANK = false;
+    private boolean CUSTOM_BANK = true;
     @Unique
     private boolean hideOriginalGui = false;
 

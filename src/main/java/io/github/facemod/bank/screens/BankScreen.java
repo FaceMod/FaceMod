@@ -51,6 +51,9 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
     // Item Storage
     private static final Map<Integer, List<ItemStack>> allTabItems = new HashMap<>();
+    private static ItemStack pickedUpItem = ItemStack.EMPTY;
+    private static int pickedUpSlotIndex = -1;
+
 
     // UI Components
     ButtonWidget guildVaultButton = null;
@@ -315,6 +318,109 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
             });
         }
     }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        System.out.println("mouseClicked");
+        if (button == 0) {
+            int startX = (width - GRID_WIDTH) / 2;
+            int startY = (height - GRID_HEIGHT) / 2;
+            for (int row = 0; row < ROWS; row++) {
+                for (int col = 0; col < COLUMNS; col++) {
+                    int x = startX + col * SLOT_SIZE;
+                    int y = startY + row * SLOT_SIZE;
+                    if (isHovered((int) mouseX, (int) mouseY, x, y)) {
+                        handleSlotClick(row, col);
+                        return true;
+                    }
+                }
+            }
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private void handleSlotClick(int row, int col) {
+        int clickedSlotIndex = row * COLUMNS + col;
+        ItemStack clickedItem = getItemStackFromSlotIndex(clickedSlotIndex);
+        System.out.println(clickedItem);
+
+        if (pickedUpItem.isEmpty()) {
+            pickedUpItem = clickedItem;
+            pickedUpSlotIndex = clickedSlotIndex;
+            setItemStackInSlotIndex(clickedSlotIndex, ItemStack.EMPTY);
+        } else {
+            if (clickedItem.isEmpty()) {
+                setItemStackInSlotIndex(clickedSlotIndex, pickedUpItem);
+            } else {
+                setItemStackInSlotIndex(clickedSlotIndex, pickedUpItem);
+            }
+            pickedUpItem = ItemStack.EMPTY;
+            pickedUpSlotIndex = -1;
+        }
+
+        //TODO: Create client-server item sync
+        //syncSlotChange(pickedUpSlotIndex, clickedSlotIndex);
+    }
+
+    private ItemStack getItemStackFromSlotIndex(int slotIndex) {
+        int tab = slotIndex / (ROWS * COLUMNS);
+        int slot = slotIndex % (ROWS * COLUMNS);
+
+        List<ItemStack> items = allTabItems.get(tab);
+        if (items != null && slot < items.size()) {
+            return items.get(slot);
+        }
+        return ItemStack.EMPTY;
+    }
+
+    private void setItemStackInSlotIndex(int slotIndex, ItemStack itemStack) {
+        int tab = slotIndex / (ROWS * COLUMNS);
+        int slot = slotIndex % (ROWS * COLUMNS);
+
+        List<ItemStack> items = allTabItems.get(tab);
+        if (items != null && slot < items.size()) {
+            items.set(slot, itemStack);
+        }
+    }
+
+    private void syncSlotChange(int fromSlot, int toSlot) {
+        if (client == null || client.getNetworkHandler() == null) {
+            return;
+        }
+
+        ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
+
+        Int2ObjectArrayMap<ItemStack> modifiedStacks = new Int2ObjectArrayMap<>();
+
+        for (int i = 0; i < handler.slots.size(); i++) {
+            modifiedStacks.put(i, handler.slots.get(i).getStack());
+        }
+
+        Packet<?> packet = new ClickSlotC2SPacket(
+                syncId,
+                0,
+                fromSlot,
+                0,
+                SlotActionType.PICKUP,
+                handler.slots.get(fromSlot).getStack(),
+                modifiedStacks
+        );
+        networkHandler.sendPacket(packet);
+
+        packet = new ClickSlotC2SPacket(
+                syncId,
+                0,
+                toSlot,
+                0,
+                SlotActionType.PICKUP,
+                handler.slots.get(toSlot).getStack(),
+                modifiedStacks
+        );
+        networkHandler.sendPacket(packet);
+    }
+
+
+
 
     private void sendClickSlotPacket(int slotIndex) {
         if (client == null || client.getNetworkHandler() == null) {

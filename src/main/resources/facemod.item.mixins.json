@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "io.github.facemod.item.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "ItemMixin",
+    "ItemRendererMixin",
+    "RenderLayerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+  ]
+}

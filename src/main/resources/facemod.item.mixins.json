@@ -3,7 +3,6 @@
   "package": "io.github.facemod.item.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ItemMixin",
     "ItemRendererMixin"
   ],
   "injectors": {

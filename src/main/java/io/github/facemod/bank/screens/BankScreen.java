@@ -211,7 +211,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                     if (index < items.size()) {
                         ItemStack stack = items.get(index);
                         context.drawItem(stack, x + 1, y + 1);
-                        //context.drawItemInSlot(textRenderer, stack, x + 1, y + 1); <-- Method removed replacement nessecary
+                        //context.drawItemInSlot(textRenderer, stack, x + 1, y + 1); <-- Method removed replacement necessary
 
                         if (isHovered(mouseX,mouseY,x+1,y+1)) {
                             context.fillGradient(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0x80FFFFFF, 0x80FFFFFF);

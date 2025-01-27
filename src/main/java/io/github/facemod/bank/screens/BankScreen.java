@@ -293,6 +293,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
                     context.drawItem(inventory.getStack(index), slotX, slotY);
                     //context.drawItemInSlot(textRenderer, inventory.getStack(index), slotX, slotY); //TODO: Find Alternative Method
+                    // context.drawStackOverlay(); seems to be the replacement
 
                     if (isHovered(mouseX,mouseY,slotX,slotY)) {
                         context.fillGradient(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0x80FFFFFF, 0x80FFFFFF);

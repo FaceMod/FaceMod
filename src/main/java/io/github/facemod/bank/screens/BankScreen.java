@@ -7,6 +7,7 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -22,6 +23,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Function;
 
 public class BankScreen extends HandledScreen<ScreenHandler> {
     // Tooltip and Sync IDs
@@ -179,10 +181,24 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
         Identifier INVENTORY_BACKGROUND = Identifier.of("minecraft", "textures/gui/container/generic_54.png");
 
         // Top + Grid
-        context.drawTexture(INVENTORY_BACKGROUND, startX - 7 + (offsetX * 10), startY - 7 + (offsetY * 10), 0, 10, 256, 97);
+        context.drawTexture(
+                id -> RenderLayer.getGui(),
+                INVENTORY_BACKGROUND,
+                startX - 7 + (offsetX * 10),
+                startY - 7 + (offsetY * 10),
+                0, 10, 256, 97,
+                256, 256
+        );
 
         // Bottom
-        context.drawTexture(INVENTORY_BACKGROUND, startX - 7 + (offsetX * 10), startY + 90 + (offsetY * 10), 0, 125, 256, 5);
+        context.drawTexture(
+                id -> RenderLayer.getGui(),
+                INVENTORY_BACKGROUND,
+                startX - 7 + (offsetX * 10),
+                startY + 90 + (offsetY * 10),
+                0, 10, 256, 97,
+                256, 256
+        );
 
         for (int row = 0; row < 5; row++) {
             for (int col = 0; col < 9; col++) {

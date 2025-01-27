@@ -4,8 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "client": [
     "ItemMixin",
-    "ItemRendererMixin",
-    "RenderLayerMixin"
+    "ItemRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

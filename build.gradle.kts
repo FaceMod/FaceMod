@@ -1,6 +1,6 @@
 plugins {
     `java-library`
-    id("fabric-loom") version "1.6-SNAPSHOT"
+    id("fabric-loom") version "1.8.11"
 }
 
 tasks.withType<net.fabricmc.loom.task.AbstractRemapJarTask> {
@@ -8,20 +8,20 @@ tasks.withType<net.fabricmc.loom.task.AbstractRemapJarTask> {
 }
 
 group = "main.java.io.github.facemod"
-version = "1.0.0-SNAPSHOT"
+version = "1.0.0"
 
 dependencies {
-    minecraft("com.mojang:minecraft:1.20.4")
-    mappings("net.fabricmc:yarn:1.20.4+build.3:v2")
-    modImplementation("net.fabricmc:fabric-loader:0.15.10")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.96.11+1.20.4")
+    minecraft("com.mojang:minecraft:1.21.3")
+    mappings("net.fabricmc:yarn:1.21.3+build.2:v2")
+    modImplementation("net.fabricmc:fabric-loader:0.16.10")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.114.0+1.21.3")
     modImplementation("net.fabricmc:access-widener:2.1.0")
 }
 
 java {
     withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 loom {

@@ -23,7 +23,6 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.function.Function;
 
 public class BankScreen extends HandledScreen<ScreenHandler> {
     // Tooltip and Sync IDs
@@ -212,7 +211,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                     if (index < items.size()) {
                         ItemStack stack = items.get(index);
                         context.drawItem(stack, x + 1, y + 1);
-                        context.drawItemInSlot(textRenderer, stack, x + 1, y + 1);
+                        //context.drawItemInSlot(textRenderer, stack, x + 1, y + 1); <-- Method removed replacement nessecary
 
                         if (isHovered(mouseX,mouseY,x+1,y+1)) {
                             context.fillGradient(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0x80FFFFFF, 0x80FFFFFF);
@@ -257,7 +256,15 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
         }
 
         Identifier INVENTORY_BACKGROUND = Identifier.of("minecraft", "textures/gui/container/inventory.png");
-        context.drawTexture(INVENTORY_BACKGROUND, startX-7, startY-3, 0,80,256,85);
+        context.drawTexture(
+                id -> RenderLayer.getGui(),
+                INVENTORY_BACKGROUND,
+                startX - 7,
+                startY - 3,
+                0, 80,
+                256, 85,
+                256, 256
+        );
 
         for (int row = 0; row < INVENTORY_ROWS; row++) {
             for (int col = 0; col < INVENTORY_COLUMNS; col++) {
@@ -285,7 +292,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                     int slotY = y + 1;
 
                     context.drawItem(inventory.getStack(index), slotX, slotY);
-                    context.drawItemInSlot(textRenderer, inventory.getStack(index), slotX, slotY);
+                    //context.drawItemInSlot(textRenderer, inventory.getStack(index), slotX, slotY); //TODO: Find Alternative Method
 
                     if (isHovered(mouseX,mouseY,slotX,slotY)) {
                         context.fillGradient(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0x80FFFFFF, 0x80FFFFFF);

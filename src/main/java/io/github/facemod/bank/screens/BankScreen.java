@@ -168,7 +168,6 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
         guildVaultButton.render(context, mouseX, mouseY, delta);
         personalVaultButton.render(context, mouseX, mouseY, delta);
     }
-
     private void drawChestGrid(DrawContext context, int startX, int startY, int mouseX, int mouseY, int offsetX, int offsetY) {
         int tabIndex = offsetX + (offsetY * 3);
         List<ItemStack> items = allTabItems.get(tabIndex);
@@ -185,17 +184,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                 INVENTORY_BACKGROUND,
                 startX - 7 + (offsetX * 10),
                 startY - 7 + (offsetY * 10),
-                0, 10, 256, 97,
-                256, 256
-        );
-
-        // Bottom
-        context.drawTexture(
-                id -> RenderLayer.getGuiTextured(INVENTORY_BACKGROUND),
-                INVENTORY_BACKGROUND,
-                startX - 7 + (offsetX * 10),
-                startY + 90 + (offsetY * 10),
-                0, 10, 256, 97,
+                0, 12, 256, 97,
                 256, 256
         );
 
@@ -257,12 +246,12 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
         Identifier INVENTORY_BACKGROUND = Identifier.of("minecraft", "textures/gui/container/inventory.png");
         context.drawTexture(
-                id -> RenderLayer.getGui(),
+                id -> RenderLayer.getGuiTextured(INVENTORY_BACKGROUND),
                 INVENTORY_BACKGROUND,
                 startX - 7,
                 startY - 3,
                 0, 80,
-                256, 85,
+                256, 87,
                 256, 256
         );
 

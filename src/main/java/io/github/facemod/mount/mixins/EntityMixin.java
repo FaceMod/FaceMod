@@ -15,11 +15,13 @@ public class EntityMixin {
 
     @Inject(method = "startRiding(Lnet/minecraft/entity/Entity;)Z", at = @At("HEAD"))
     private void startRiding(Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        FaceModInitializer.CLIENT.options.setPerspective(Perspective.THIRD_PERSON_BACK);
+        FaceModInitializer.INSTANCE.logger.info("Starting Riding");
+        FaceModInitializer.INSTANCE.CLIENT.options.setPerspective(Perspective.THIRD_PERSON_BACK);
     }
 
     @Inject(method = "stopRiding",  at = @At("HEAD"))
     private void stopRiding(CallbackInfo ci){
-        FaceModInitializer.CLIENT.options.setPerspective(Perspective.FIRST_PERSON);
+        FaceModInitializer.INSTANCE.logger.info("Stopping Riding");
+        FaceModInitializer.INSTANCE.CLIENT.options.setPerspective(Perspective.FIRST_PERSON);
     }
 }

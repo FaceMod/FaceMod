@@ -25,5 +25,4 @@ java {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/facemod.accesswidener")
 }

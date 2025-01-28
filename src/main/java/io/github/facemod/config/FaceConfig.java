@@ -5,6 +5,7 @@ import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
+@SuppressWarnings("unused")
 @Config(name = "FaceMod")
 public class FaceConfig implements ConfigData {
 

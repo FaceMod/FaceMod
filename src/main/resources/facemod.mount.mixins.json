@@ -3,7 +3,8 @@
   "package": "io.github.facemod.mount.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ItemDisplayEntityRenderer"
+    "ItemDisplayEntityRenderer",
+    "EntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

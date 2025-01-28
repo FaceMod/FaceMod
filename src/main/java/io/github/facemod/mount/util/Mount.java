@@ -1,6 +1,7 @@
 package io.github.facemod.mount.util;
 
 import io.github.facemod.FaceModInitializer;
+import io.github.facemod.config.FaceConfig;
 import net.minecraft.client.option.Perspective;
 
 public class Mount {
@@ -8,6 +9,10 @@ public class Mount {
 
     public static void update() {
         if (FaceModInitializer.INSTANCE.CLIENT.player == null) {
+            return;
+        }
+
+        if(!FaceModInitializer.INSTANCE.CONFIG.general.mountThirdPerson) {
             return;
         }
 

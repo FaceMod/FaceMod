@@ -1,5 +1,6 @@
 package io.github.facemod.bank.mixins;
 
+import io.github.facemod.FaceModInitializer;
 import io.github.facemod.bank.screens.BankScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -16,8 +17,6 @@ import java.util.Objects;
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin {
     @Unique
-    private boolean CUSTOM_BANK = true;
-    @Unique
     private boolean hideOriginalGui = false;
 
     @Inject(method = "init", at = @At("TAIL"))
@@ -27,7 +26,7 @@ public abstract class HandledScreenMixin {
         Text screenTitle = handledScreen.getTitle();
 
         //TODO: Replace this hard coded unicode character with class.
-        if(CUSTOM_BANK) {
+        if(FaceModInitializer.INSTANCE.CONFIG.inventory.customBank) {
             if (screenTitle.getString().contains("拴") || screenTitle.getString().contains("拽") || screenTitle.getString().contains("抭")) {
                 hideOriginalGui = true;
 

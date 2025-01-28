@@ -201,6 +201,8 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                         ItemStack stack = items.get(index);
                         context.drawItem(stack, x + 1, y + 1);
                         //context.drawItemInSlot(textRenderer, stack, x + 1, y + 1); <-- Method removed replacement necessary
+                        context.drawStackOverlay(textRenderer, stack, x + 1, y + 1);
+
 
                         if (isHovered(mouseX,mouseY,x+1,y+1)) {
                             context.fillGradient(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0x80FFFFFF, 0x80FFFFFF);
@@ -282,7 +284,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
                     context.drawItem(inventory.getStack(index), slotX, slotY);
                     //context.drawItemInSlot(textRenderer, inventory.getStack(index), slotX, slotY); //TODO: Find Alternative Method
-                    // context.drawStackOverlay(); seems to be the replacement
+                    context.drawStackOverlay(textRenderer, inventory.getStack(index), slotX, slotY);
 
                     if (isHovered(mouseX,mouseY,slotX,slotY)) {
                         context.fillGradient(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0x80FFFFFF, 0x80FFFFFF);

@@ -181,7 +181,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
         // Top + Grid
         context.drawTexture(
-                id -> RenderLayer.getGui(),
+                id -> RenderLayer.getGuiTextured(INVENTORY_BACKGROUND),
                 INVENTORY_BACKGROUND,
                 startX - 7 + (offsetX * 10),
                 startY - 7 + (offsetY * 10),
@@ -191,7 +191,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
         // Bottom
         context.drawTexture(
-                id -> RenderLayer.getGui(),
+                id -> RenderLayer.getGuiTextured(INVENTORY_BACKGROUND),
                 INVENTORY_BACKGROUND,
                 startX - 7 + (offsetX * 10),
                 startY + 90 + (offsetY * 10),

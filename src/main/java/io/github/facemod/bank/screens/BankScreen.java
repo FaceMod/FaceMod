@@ -249,7 +249,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
         Identifier INVENTORY_BACKGROUND = Identifier.of("minecraft", "textures/gui/container/inventory.png");
         context.drawTexture(
                 id -> RenderLayer.getGuiTextured(INVENTORY_BACKGROUND), // Render Layer
-                INVENTORY_BACKGROUND, // Texture
+                INVENTORY_BACKGROUND, // Texturewb
                 startX - 7,
                 startY - 3,
                 0, 80, // UVs are cropping the image starting from the top left, in this case we start 80 pixels down

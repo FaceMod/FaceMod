@@ -17,5 +17,15 @@
 
   "text.autoconfig.FaceMod.option.inventory.customBank": "Custom Bank (Experimental)",
   "text.autoconfig.FaceMod.option.inventory.autoTool": "Auto Tool",
-  "text.autoconfig.FaceMod.option.inventory.autoTool.enabled": "Enabled"
+  "text.autoconfig.FaceMod.option.inventory.autoTool.enabled": "Enabled",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight": "Highlight Drops",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.enabled": "Enabled",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.rarity": "Rarities",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.rarity.common": "Common",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.rarity.uncommon": "Uncommon",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.rarity.rare": "Rare",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.rarity.epic": "Epic",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.rarity.unique": "Unique",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.filterTags": "Filter Tag(s)",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.filterTags.@Tooltip": "Tags to filter for in item lore ex: Physical Damage. Separate tags with a comma."
 }

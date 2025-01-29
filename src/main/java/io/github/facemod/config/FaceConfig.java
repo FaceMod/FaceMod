@@ -71,6 +71,39 @@ public class FaceConfig implements ConfigData {
             @ConfigEntry.Gui.Excluded
             public int HOE = 17;
         }
+
+        @ConfigEntry.Gui.CollapsibleObject()
+        public DropHighlight dropHighlight = new DropHighlight();
+        public static class DropHighlight {
+
+            @ConfigEntry.Gui.NoTooltip
+            public boolean enabled = false;
+
+            @ConfigEntry.Gui.CollapsibleObject()
+            public selectRarity rarity = new selectRarity();
+
+            @ConfigEntry.Gui.Tooltip
+            public String filterTags = "";
+
+        }
+
+        public static class selectRarity {
+            @ConfigEntry.Gui.NoTooltip
+            public boolean common = false;
+
+            @ConfigEntry.Gui.NoTooltip
+            public boolean uncommon = false;
+
+            @ConfigEntry.Gui.NoTooltip
+            public boolean rare = false;
+
+            @ConfigEntry.Gui.NoTooltip
+            public boolean epic = false;
+
+            @ConfigEntry.Gui.NoTooltip
+            public boolean unique = false;
+
+        }
     }
 
 }

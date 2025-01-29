@@ -1,13 +1,21 @@
 {
+  "FaceMod.title": "FaceMod",
   "text.autoconfig.FaceMod.category.general": "General",
   "text.autoconfig.FaceMod.category.inventory": "Inventory",
+
+  "FaceMod.key.escape": "Escape",
+  "FaceMod.key.mount": "Mount",
+  "FaceMod.key.spellFour": "Spell 4",
+  "FaceMod.key.spellThree": "Spell 3",
+  "FaceMod.key.spellTwo": "Spell 2",
+  "FaceMod.key.spellOne": "Spell 1",
 
   "text.autoconfig.FaceMod.title": "FaceMod",
   "text.autoconfig.FaceMod.option.general.mountThirdPerson": "3rd Person Mount",
   "text.autoconfig.FaceMod.option.general.instantBowZoom": "Instant Bow Zoom",
   "text.autoconfig.FaceMod.option.general.playerListHeightOffset": "PlayerList Offset",
 
-  "text.autoconfig.FaceMod.option.inventory.customBank": "Custom Bank",
+  "text.autoconfig.FaceMod.option.inventory.customBank": "Custom Bank (Experimental)",
   "text.autoconfig.FaceMod.option.inventory.autoTool": "Auto Tool",
   "text.autoconfig.FaceMod.option.inventory.autoTool.enabled": "Enabled"
 }

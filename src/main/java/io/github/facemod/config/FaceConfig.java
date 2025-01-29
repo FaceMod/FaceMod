@@ -123,6 +123,7 @@ public class FaceConfig implements ConfigData {
 
             @ConfigEntry.Gui.NoTooltip public boolean socketgem = false;
             @ConfigEntry.Gui.NoTooltip public boolean enchantmentbook = false;
+            @ConfigEntry.Gui.NoTooltip public boolean potion = false;
 
             public List<String> getSelectedGear() {
                 List<String> selectedGear = new ArrayList<>();
@@ -155,6 +156,7 @@ public class FaceConfig implements ConfigData {
 
                 if (socketgem) selectedGear.add("socketgem");
                 if (enchantmentbook) selectedGear.add("enchantmentbook");
+                if (potion) selectedGear.add("potion");
 
                 return selectedGear;
             }

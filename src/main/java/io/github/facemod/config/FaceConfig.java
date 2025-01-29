@@ -82,8 +82,66 @@ public class FaceConfig implements ConfigData {
             @ConfigEntry.Gui.CollapsibleObject()
             public selectRarity rarity = new selectRarity();
 
+            @ConfigEntry.Gui.CollapsibleObject()
+            public selectRarity selectRarity = new selectRarity();
+
             @ConfigEntry.Gui.Tooltip
             public String filterTags = "";
+
+        }
+
+        public static class selectGear {
+            @ConfigEntry.Gui.NoTooltip
+            public boolean sword = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean staff = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean wand = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean pistol = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean warhammer = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean longbow = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean shortbow = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean battleaxe = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean dagger = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean mace = false;
+
+            @ConfigEntry.Gui.NoTooltip
+            public boolean hoe = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean pickaxe = false;
+
+            @ConfigEntry.Gui.NoTooltip
+            public boolean spellbook = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean quiver = false;
+
+            @ConfigEntry.Gui.NoTooltip
+            public boolean ring = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean earring = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean necklace = false;
+
+            @ConfigEntry.Gui.NoTooltip
+            public boolean helmet = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean chestplate = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean leggings = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean boots = false;
+
+            @ConfigEntry.Gui.NoTooltip
+            public boolean socketgem = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean enchantmentbook = false;
 
         }
 

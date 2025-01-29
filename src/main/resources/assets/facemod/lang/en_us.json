@@ -27,5 +27,31 @@
   "text.autoconfig.FaceMod.option.inventory.dropHighlight.rarity.epic": "Epic",
   "text.autoconfig.FaceMod.option.inventory.dropHighlight.rarity.unique": "Unique",
   "text.autoconfig.FaceMod.option.inventory.dropHighlight.filterTags": "Filter Tag(s)",
-  "text.autoconfig.FaceMod.option.inventory.dropHighlight.filterTags.@Tooltip": "Tags to filter for in item lore ex: Physical Damage. Separate tags with a comma."
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.filterTags.@Tooltip": "Tags to filter for in item lore ex: Physical Damage. Separate tags with a comma.",
+
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear": "Select Gear",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.sword": "Sword",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.staff": "Staff",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.wand": "Wand",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.pistol": "Pistol",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.warhammer": "Warhammer",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.longbow": "Longbow",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.shortbow": "Shortbow",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.battleaxe": "Battleaxe",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.dagger": "Dagger",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.mace": "Mace",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.hoe": "Hoe",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.pickaxe": "Pickaxe",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.spellbook": "Spellbook",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.quiver": "Quiver",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.ring": "Ring",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.earring": "Earring",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.necklace": "Necklace",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.helmet": "Helmet",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.chestplate": "Chestplate",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.leggings": "Leggings",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.boots": "Boots",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.socketgem": "Socket Gem",
+  "text.autoconfig.FaceMod.option.inventory.dropHighlight.selectGear.enchantmentbook": "Enchantment Book"
+
 }

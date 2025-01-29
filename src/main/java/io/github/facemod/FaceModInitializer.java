@@ -22,7 +22,7 @@ public class FaceModInitializer implements ClientModInitializer {
     public static FaceModInitializer INSTANCE;
     public FaceConfig CONFIG;
     public MinecraftClient CLIENT;
-    public FaceBinds FACE_BINDS = new FaceBinds();
+    public FaceBinds FACE_BINDS = new FaceBinds(); // FACE_BINDS must be defined here, despite it being a static method it crashes otherwise.
 
     @Override
     public void onInitializeClient() {
@@ -42,9 +42,7 @@ public class FaceModInitializer implements ClientModInitializer {
             }
         }));
 
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
-            FaceConfig.General.onFaceLand = false;
-        });
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> FaceConfig.General.onFaceLand = false);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (!FaceConfig.General.onFaceLand || client == null || client.player == null) {

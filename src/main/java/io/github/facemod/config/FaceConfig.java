@@ -160,7 +160,6 @@ public class FaceConfig implements ConfigData {
 
             @ConfigEntry.Gui.NoTooltip
             public boolean unique = false;
-
         }
     }
 

@@ -15,6 +15,10 @@ public class FaceBinds {
     public static KeyBinding SPELL_TWO = add("facemod.key.spellTwo", GLFW.GLFW_KEY_2);
     public static KeyBinding SPELL_THREE = add("facemod.key.spellThree", GLFW.GLFW_KEY_3);
     public static KeyBinding SPELL_FOUR = add("facemod.key.spellFour", GLFW.GLFW_KEY_4);
+    public static KeyBinding POTION_HEALING = add("facemod.key.potionHeal", GLFW.GLFW_KEY_R);
+    public static KeyBinding POTION_ENERGY = add("facemod.key.potionEnergy", GLFW.GLFW_KEY_G);
+    //public static KeyBinding POTION_EXTRA = add("facemod.key.potionExtra", GLFW.GLFW_KEY_UNKNOWN);
+
 
 
     public static KeyBinding add(String key, int defaultKey) {

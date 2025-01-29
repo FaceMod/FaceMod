@@ -94,6 +94,14 @@ public class FaceModInitializer implements ClientModInitializer {
         if (FaceBinds.SPELL_FOUR.wasPressed()) {
             BindHandler.SPELL_FOUR();
         }
+
+        if (FaceBinds.POTION_HEALING.wasPressed()) {
+            BindHandler.POTION_HEALING();
+        }
+
+        if (FaceBinds.POTION_ENERGY.wasPressed()) {
+            BindHandler.POTION_ENERGY();
+        }
     }
 
 }

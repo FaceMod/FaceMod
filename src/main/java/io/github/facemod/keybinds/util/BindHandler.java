@@ -1,6 +1,10 @@
 package io.github.facemod.keybinds.util;
 
 import io.github.facemod.FaceModInitializer;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
+import net.minecraft.util.Hand;
 
 public class BindHandler {
     private static final FaceModInitializer INSTANCE = FaceModInitializer.INSTANCE;
@@ -37,4 +41,80 @@ public class BindHandler {
     public static void SPELL_FOUR() {
         FaceModInitializer.INSTANCE.swapHotbar(3);
     }
+
+    public static void POTION_HEALING() {
+        if(INSTANCE.CLIENT.player == null){
+            return;
+        }
+        PlayerInventory inventory = INSTANCE.CLIENT.player.getInventory();
+        int previousSlot = inventory.selectedSlot;
+        int potionSlot = findLifePotion(inventory);
+
+        if (potionSlot < 0 || potionSlot > 8) return; // Ensure slot is valid
+
+        INSTANCE.CLIENT.player.getInventory().selectedSlot = potionSlot;
+        INSTANCE.CLIENT.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(potionSlot));
+
+        Hand hand = Hand.MAIN_HAND; // Assuming potion is in main hand
+        INSTANCE.CLIENT.interactionManager.interactItem(INSTANCE.CLIENT.player, hand);
+
+        INSTANCE.CLIENT.execute(() -> {
+            try {
+                Thread.sleep(100); // Small delay to ensure action is sent before switching back
+            } catch (InterruptedException ignored) {}
+
+            // Swap back to previous item
+            INSTANCE.CLIENT.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(previousSlot));
+            inventory.selectedSlot = previousSlot;
+        });    }
+
+    public static void POTION_ENERGY() {
+        if(INSTANCE.CLIENT.player == null){
+            return;
+        }
+        PlayerInventory inventory = INSTANCE.CLIENT.player.getInventory();
+        int previousSlot = inventory.selectedSlot;
+        int potionSlot = findEnergyPotion(inventory);
+
+        if (potionSlot == -1) return;
+
+        if (potionSlot < 0 || potionSlot > 8) return; // Ensure slot is valid
+
+        INSTANCE.CLIENT.player.getInventory().selectedSlot = potionSlot;
+        INSTANCE.CLIENT.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(potionSlot));
+
+        Hand hand = Hand.MAIN_HAND; // Assuming potion is in main hand
+        INSTANCE.CLIENT.interactionManager.interactItem(INSTANCE.CLIENT.player, hand);
+
+        INSTANCE.CLIENT.execute(() -> {
+            try {
+                Thread.sleep(100); // Small delay to ensure action is sent before switching back
+            } catch (InterruptedException ignored) {}
+
+            // Swap back to previous item
+            INSTANCE.CLIENT.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(previousSlot));
+            inventory.selectedSlot = previousSlot;
+        });
+    }
+
+    public static int findLifePotion(PlayerInventory inventory) {
+        for (int i = 0; i < 9; i++) {
+            ItemStack stack = inventory.getStack(i);
+            if (stack.getName().getString().contains("Life Potion")) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static int findEnergyPotion(PlayerInventory inventory) {
+        for (int i = 0; i < 9; i++) {
+            ItemStack stack = inventory.getStack(i);
+            if (stack.getName().getString().contains("Energy Potion")) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
 }

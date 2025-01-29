@@ -5,6 +5,10 @@ import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 @SuppressWarnings("unused")
 @Config(name = "FaceMod")
 public class FaceConfig implements ConfigData {
@@ -91,76 +95,97 @@ public class FaceConfig implements ConfigData {
         }
 
         public static class selectGear {
-            @ConfigEntry.Gui.NoTooltip
-            public boolean sword = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean staff = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean wand = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean pistol = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean warhammer = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean longbow = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean shortbow = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean battleaxe = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean dagger = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean mace = false;
+            @ConfigEntry.Gui.NoTooltip public boolean sword = false;
+            @ConfigEntry.Gui.NoTooltip public boolean staff = false;
+            @ConfigEntry.Gui.NoTooltip public boolean wand = false;
+            @ConfigEntry.Gui.NoTooltip public boolean pistol = false;
+            @ConfigEntry.Gui.NoTooltip public boolean warhammer = false;
+            @ConfigEntry.Gui.NoTooltip public boolean longbow = false;
+            @ConfigEntry.Gui.NoTooltip public boolean shortbow = false;
+            @ConfigEntry.Gui.NoTooltip public boolean battleaxe = false;
+            @ConfigEntry.Gui.NoTooltip public boolean dagger = false;
+            @ConfigEntry.Gui.NoTooltip public boolean mace = false;
 
-            @ConfigEntry.Gui.NoTooltip
-            public boolean hoe = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean pickaxe = false;
+            @ConfigEntry.Gui.NoTooltip public boolean hoe = false;
+            @ConfigEntry.Gui.NoTooltip public boolean pickaxe = false;
 
-            @ConfigEntry.Gui.NoTooltip
-            public boolean spellbook = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean quiver = false;
+            @ConfigEntry.Gui.NoTooltip public boolean spellbook = false;
+            @ConfigEntry.Gui.NoTooltip public boolean quiver = false;
 
-            @ConfigEntry.Gui.NoTooltip
-            public boolean ring = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean earring = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean necklace = false;
+            @ConfigEntry.Gui.NoTooltip public boolean ring = false;
+            @ConfigEntry.Gui.NoTooltip public boolean earring = false;
+            @ConfigEntry.Gui.NoTooltip public boolean necklace = false;
 
-            @ConfigEntry.Gui.NoTooltip
-            public boolean helmet = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean chestplate = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean leggings = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean boots = false;
+            @ConfigEntry.Gui.NoTooltip public boolean helmet = false;
+            @ConfigEntry.Gui.NoTooltip public boolean chestplate = false;
+            @ConfigEntry.Gui.NoTooltip public boolean leggings = false;
+            @ConfigEntry.Gui.NoTooltip public boolean boots = false;
 
-            @ConfigEntry.Gui.NoTooltip
-            public boolean socketgem = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean enchantmentbook = false;
+            @ConfigEntry.Gui.NoTooltip public boolean socketgem = false;
+            @ConfigEntry.Gui.NoTooltip public boolean enchantmentbook = false;
 
+            public List<String> getSelectedGear() {
+                List<String> selectedGear = new ArrayList<>();
+
+                if (sword) selectedGear.add("sword");
+                if (staff) selectedGear.add("staff");
+                if (wand) selectedGear.add("wand");
+                if (pistol) selectedGear.add("pistol");
+                if (warhammer) selectedGear.add("warhammer");
+                if (longbow) selectedGear.add("longbow");
+                if (shortbow) selectedGear.add("shortbow");
+                if (battleaxe) selectedGear.add("battleaxe");
+                if (dagger) selectedGear.add("dagger");
+                if (mace) selectedGear.add("mace");
+
+                if (hoe) selectedGear.add("hoe");
+                if (pickaxe) selectedGear.add("pickaxe");
+
+                if (spellbook) selectedGear.add("spellbook");
+                if (quiver) selectedGear.add("quiver");
+
+                if (ring) selectedGear.add("ring");
+                if (earring) selectedGear.add("earring");
+                if (necklace) selectedGear.add("necklace");
+
+                if (helmet) selectedGear.add("helmet");
+                if (chestplate) selectedGear.add("chestplate");
+                if (leggings) selectedGear.add("leggings");
+                if (boots) selectedGear.add("boots");
+
+                if (socketgem) selectedGear.add("socketgem");
+                if (enchantmentbook) selectedGear.add("enchantmentbook");
+
+                return selectedGear;
+            }
         }
 
         public static class selectRarity {
             @ConfigEntry.Gui.NoTooltip
             public boolean common = false;
-
             @ConfigEntry.Gui.NoTooltip
             public boolean uncommon = false;
-
             @ConfigEntry.Gui.NoTooltip
             public boolean rare = false;
-
             @ConfigEntry.Gui.NoTooltip
             public boolean epic = false;
-
             @ConfigEntry.Gui.NoTooltip
             public boolean unique = false;
+
+            public List<String> getSelectedRarities() {
+                List<String> selectedRarities = new ArrayList<>();
+
+                if (common) selectedRarities.add("common");
+                if (uncommon) selectedRarities.add("uncommon");
+                if (rare) selectedRarities.add("rare");
+                if (epic) selectedRarities.add("epic");
+                if (unique) selectedRarities.add("unique");
+
+                return selectedRarities;
+            }
         }
+
+
     }
 
 }

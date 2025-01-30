@@ -1,11 +1,5 @@
 package io.github.facemod.item.util;
 
-import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.component.Component;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipData;
-import net.minecraft.text.Text;
-
 import java.util.*;
 
 public class Unicode {

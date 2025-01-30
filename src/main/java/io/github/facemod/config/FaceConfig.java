@@ -108,18 +108,33 @@ public class FaceConfig implements ConfigData {
 
             @ConfigEntry.Gui.NoTooltip public boolean hoe = false;
             @ConfigEntry.Gui.NoTooltip public boolean pickaxe = false;
-
+            @ConfigEntry.Gui.NoTooltip public boolean rod = false;
+            
             @ConfigEntry.Gui.NoTooltip public boolean spellbook = false;
             @ConfigEntry.Gui.NoTooltip public boolean quiver = false;
+            @ConfigEntry.Gui.NoTooltip public boolean ammunition = false;
 
             @ConfigEntry.Gui.NoTooltip public boolean ring = false;
             @ConfigEntry.Gui.NoTooltip public boolean earring = false;
             @ConfigEntry.Gui.NoTooltip public boolean necklace = false;
 
             @ConfigEntry.Gui.NoTooltip public boolean helmet = false;
-            @ConfigEntry.Gui.NoTooltip public boolean chestplate = false;
+            @ConfigEntry.Gui.NoTooltip public boolean coif = false;
+            @ConfigEntry.Gui.NoTooltip public boolean hat = false;
+
+            @ConfigEntry.Gui.NoTooltip public boolean platebody = false;
+            @ConfigEntry.Gui.NoTooltip public boolean robe = false;
+            @ConfigEntry.Gui.NoTooltip public boolean tunic = false;
+
             @ConfigEntry.Gui.NoTooltip public boolean leggings = false;
+            @ConfigEntry.Gui.NoTooltip public boolean platelegs = false;
+            @ConfigEntry.Gui.NoTooltip public boolean skirt = false;
+
+
             @ConfigEntry.Gui.NoTooltip public boolean boots = false;
+            @ConfigEntry.Gui.NoTooltip public boolean shoes = false;
+            @ConfigEntry.Gui.NoTooltip public boolean greaves = false;
+
 
             @ConfigEntry.Gui.NoTooltip public boolean socketgem = false;
             @ConfigEntry.Gui.NoTooltip public boolean enchantmentbook = false;

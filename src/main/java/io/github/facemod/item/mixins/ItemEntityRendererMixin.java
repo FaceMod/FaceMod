@@ -1,48 +1,37 @@
 package io.github.facemod.item.mixins;
 
 import io.github.facemod.FaceModInitializer;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
 import net.minecraft.client.render.entity.state.ItemEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.component.ComponentMap;
-import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
-import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
-import static org.lwjgl.opengl.GL11.GL_NO_ERROR;
-import static org.lwjgl.opengl.GL11.glGetError;
+import java.util.*;
 
 @Mixin(ItemEntityRenderer.class)
 public class ItemEntityRendererMixin {
-
-    private static final Map<String, String> ITEM_CATEGORIES = new HashMap<>();
-
-    static {
-        ITEM_CATEGORIES.put("Sword", "sword");
-        ITEM_CATEGORIES.put("Mace", "mace");
-        ITEM_CATEGORIES.put("Staff", "staff");
-        ITEM_CATEGORIES.put("Dagger", "dagger");
-        ITEM_CATEGORIES.put("Wand", "wand");
-        ITEM_CATEGORIES.put("Pistol", "pistol");
-        ITEM_CATEGORIES.put("Warhammer", "warhammer");
-        ITEM_CATEGORIES.put("Longbow", "longbow");
-        ITEM_CATEGORIES.put("Shortbow", "shortbow");
-        ITEM_CATEGORIES.put("Battleaxe", "battleaxe");
-
-    }
+    @Unique
+    private static final Identifier BEACON_BEAM_TEXTURE = Identifier.of("minecraft","textures/entity/beacon_beam.png");
+    @Unique
+    private static final Set<String> seenItems = new HashSet<>();
 
     @Inject(method = "render*", at = @At("HEAD"))
     public void onRender(ItemEntityRenderState renderState, MatrixStack matrixStack,
@@ -54,19 +43,14 @@ public class ItemEntityRendererMixin {
             ItemStack itemStack = renderState.stack;
 
             ComponentMap map = itemStack.getComponents();
-            NbtComponent nbtComponent = itemStack.get(DataComponentTypes.CUSTOM_DATA);
             LoreComponent lore = itemStack.get(DataComponentTypes.LORE);
 
             if (lore == null) {
                 return;
             }
 
-            System.out.println("ItemEntityRenderer Item: " + Objects.requireNonNull(map.get(DataComponentTypes.CUSTOM_NAME)).getString().toLowerCase());
-
             ArrayList<String> loreList = new ArrayList<>();
             lore.lines().forEach(l -> loreList.add(l.getString()));
-
-            System.out.println("ItemEntityRenderer Lore: " + loreList);
 
             int categorieIndex = -1;
             for (int i = 0; i < loreList.size(); i++) {
@@ -89,17 +73,69 @@ public class ItemEntityRendererMixin {
             }
 
             if (categorieIndex == -1) {
+                System.out.println("No categories found for " + itemStack.getItem().getTranslationKey());
                 return;
             }
 
-            String category = FaceModInitializer.INSTANCE.unicode.decode(loreList.get(categorieIndex));
-
-            System.out.println("ItemEntityRenderer Category: " + category);
-
             String cleanedCategory = FaceModInitializer.INSTANCE.unicode.decode(loreList.get(categorieIndex))
                     .replaceAll("[^A-Z' ]", "");
+            int splitIndex = cleanedCategory.indexOf("'");
 
-            System.out.println("ItemEntityRenderer Category (Cleaned): " + cleanedCategory);
+            if (splitIndex == -1) {
+                System.out.println("Invalid category format: " + cleanedCategory);
+                return;
+            }
+
+            String rarity = cleanedCategory.substring(0, cleanedCategory.indexOf("'")).trim().toLowerCase();
+            String itemtype = cleanedCategory.substring(cleanedCategory.indexOf("'") + 1).trim().toLowerCase();
+
+            System.out.println("ItemEntityRenderer Rarity: " + rarity);
+            System.out.println("ItemEntityRenderer Itemtype: " + itemtype);
+
+            List<String> typeList = FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.selectGear.getSelectedGear();
+            List<String> rarityList = FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.rarity.getSelectedRarities();
+
+            if (!typeList.contains(itemtype) && !typeList.isEmpty()) {
+                return;
+            }
+
+            if (!rarityList.contains(rarity) && !rarityList.isEmpty()) {
+                return;
+            }
+
+            if (!loreList.contains(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags)
+                    && !FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags.isEmpty()) {
+                return;
+            }
+
+            if (FaceModInitializer.INSTANCE.CLIENT.player == null) {
+                return;
+            }
+
+            Vec3d itemPos = new Vec3d(renderState.x, renderState.y, renderState.z);
+            String itemKey = itemStack.getItem().toString() + ":" + Math.round(itemPos.x) + ":" + Math.round(itemPos.y) + ":" + Math.round(itemPos.z);
+
+            if (!seenItems.contains(itemKey)) {
+                System.out.println("ItemEntityRenderer itemKey: " + itemKey);
+                FaceModInitializer.INSTANCE.CLIENT.player.sendMessage(Text.of("[FaceMod] >> " + rarity + " " + itemtype
+                        + " with " + FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags + " dropped!"), false);
+                seenItems.add(itemKey);
+            }
+
+            ClientWorld world = MinecraftClient.getInstance().world;
+
+            if (world == null){
+                return;
+            }
+
+            for (int i = 0; i < 20; i++) {
+                world.addParticle(ParticleTypes.END_ROD,
+                        itemPos.x,
+                        itemPos.y + 2 + i * 0.5,
+                        itemPos.z,
+                        0, 0.05, 0);
+            }
+
         }
     }
 }

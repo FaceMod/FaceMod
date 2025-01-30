@@ -95,50 +95,83 @@ public class FaceConfig implements ConfigData {
         }
 
         public static class selectGear {
-            @ConfigEntry.Gui.NoTooltip public boolean sword = false;
-            @ConfigEntry.Gui.NoTooltip public boolean staff = false;
-            @ConfigEntry.Gui.NoTooltip public boolean wand = false;
-            @ConfigEntry.Gui.NoTooltip public boolean pistol = false;
-            @ConfigEntry.Gui.NoTooltip public boolean warhammer = false;
-            @ConfigEntry.Gui.NoTooltip public boolean longbow = false;
-            @ConfigEntry.Gui.NoTooltip public boolean shortbow = false;
-            @ConfigEntry.Gui.NoTooltip public boolean battleaxe = false;
-            @ConfigEntry.Gui.NoTooltip public boolean dagger = false;
-            @ConfigEntry.Gui.NoTooltip public boolean mace = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean sword = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean staff = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean wand = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean pistol = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean warhammer = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean longbow = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean shortbow = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean battleaxe = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean dagger = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean mace = false;
 
-            @ConfigEntry.Gui.NoTooltip public boolean hoe = false;
-            @ConfigEntry.Gui.NoTooltip public boolean pickaxe = false;
-            @ConfigEntry.Gui.NoTooltip public boolean rod = false;
-            
-            @ConfigEntry.Gui.NoTooltip public boolean spellbook = false;
-            @ConfigEntry.Gui.NoTooltip public boolean quiver = false;
-            @ConfigEntry.Gui.NoTooltip public boolean ammunition = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean hoe = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean pickaxe = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean rod = false;
 
-            @ConfigEntry.Gui.NoTooltip public boolean ring = false;
-            @ConfigEntry.Gui.NoTooltip public boolean earring = false;
-            @ConfigEntry.Gui.NoTooltip public boolean necklace = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean spellbook = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean quiver = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean ammunition = false;
 
-            @ConfigEntry.Gui.NoTooltip public boolean helmet = false;
-            @ConfigEntry.Gui.NoTooltip public boolean coif = false;
-            @ConfigEntry.Gui.NoTooltip public boolean hat = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean ring = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean earring = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean necklace = false;
 
-            @ConfigEntry.Gui.NoTooltip public boolean platebody = false;
-            @ConfigEntry.Gui.NoTooltip public boolean robe = false;
-            @ConfigEntry.Gui.NoTooltip public boolean tunic = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean helmet = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean coif = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean hat = false;
 
-            @ConfigEntry.Gui.NoTooltip public boolean leggings = false;
-            @ConfigEntry.Gui.NoTooltip public boolean platelegs = false;
-            @ConfigEntry.Gui.NoTooltip public boolean skirt = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean platebody = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean robe = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean tunic = false;
+
+            @ConfigEntry.Gui.NoTooltip
+            public boolean leggings = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean platelegs = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean skirt = false;
 
 
-            @ConfigEntry.Gui.NoTooltip public boolean boots = false;
-            @ConfigEntry.Gui.NoTooltip public boolean shoes = false;
-            @ConfigEntry.Gui.NoTooltip public boolean greaves = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean boots = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean shoes = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean greaves = false;
 
-
-            @ConfigEntry.Gui.NoTooltip public boolean socketgem = false;
-            @ConfigEntry.Gui.NoTooltip public boolean enchantmentbook = false;
-            @ConfigEntry.Gui.NoTooltip public boolean potion = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean socketgem = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean enchantmentbook = false;
+            @ConfigEntry.Gui.NoTooltip
+            public boolean potion = false;
 
             public List<String> getSelectedGear() {
                 List<String> selectedGear = new ArrayList<>();
@@ -156,18 +189,31 @@ public class FaceConfig implements ConfigData {
 
                 if (hoe) selectedGear.add("hoe");
                 if (pickaxe) selectedGear.add("pickaxe");
+                if (rod) selectedGear.add("rod");
 
                 if (spellbook) selectedGear.add("spellbook");
                 if (quiver) selectedGear.add("quiver");
+                if (ammunition) selectedGear.add("ammunition");
 
                 if (ring) selectedGear.add("ring");
                 if (earring) selectedGear.add("earring");
                 if (necklace) selectedGear.add("necklace");
 
                 if (helmet) selectedGear.add("helmet");
-                if (chestplate) selectedGear.add("chestplate");
+                if (coif) selectedGear.add("coif");
+                if (hat) selectedGear.add("hat");
+
+                if (platebody) selectedGear.add("platebody");
+                if (robe) selectedGear.add("robe");
+                if (tunic) selectedGear.add("tunic");
+
                 if (leggings) selectedGear.add("leggings");
+                if (platelegs) selectedGear.add("platelegs");
+                if (skirt) selectedGear.add("skirt");
+
                 if (boots) selectedGear.add("boots");
+                if (shoes) selectedGear.add("shoes");
+                if (greaves) selectedGear.add("greaves");
 
                 if (socketgem) selectedGear.add("socketgem");
                 if (enchantmentbook) selectedGear.add("enchantmentbook");

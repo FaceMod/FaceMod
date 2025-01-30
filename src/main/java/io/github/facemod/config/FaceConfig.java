@@ -87,7 +87,7 @@ public class FaceConfig implements ConfigData {
             public selectRarity rarity = new selectRarity();
 
             @ConfigEntry.Gui.CollapsibleObject()
-            public selectRarity selectRarity = new selectRarity();
+            public selectGear selectGear = new selectGear();
 
             @ConfigEntry.Gui.Tooltip
             public String filterTags = "";

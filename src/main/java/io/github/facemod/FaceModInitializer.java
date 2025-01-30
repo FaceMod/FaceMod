@@ -1,5 +1,6 @@
 package io.github.facemod;
 
+import io.github.facemod.item.util.Unicode;
 import io.github.facemod.keybinds.util.BindHandler;
 import io.github.facemod.keybinds.util.FaceBinds;
 import io.github.facemod.config.FaceConfig;
@@ -23,6 +24,7 @@ public class FaceModInitializer implements ClientModInitializer {
     public FaceConfig CONFIG;
     public MinecraftClient CLIENT;
     public FaceBinds FACE_BINDS = new FaceBinds(); // FACE_BINDS must be defined here, despite it being a static method it crashes otherwise.
+    public Unicode unicode = new Unicode();
 
     @Override
     public void onInitializeClient() {
@@ -33,6 +35,7 @@ public class FaceModInitializer implements ClientModInitializer {
         var holder = AutoConfig.getConfigHolder(FaceConfig.class);
         CONFIG = holder.getConfig();
         FaceConfig.holder = holder;
+        unicode.init();
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> client.execute(() -> {
             ClientConnection connection = Objects.requireNonNull(client.getNetworkHandler()).getConnection();

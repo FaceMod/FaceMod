@@ -2,10 +2,7 @@ package io.github.facemod.item.mixins;
 
 import io.github.facemod.FaceModInitializer;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
 import net.minecraft.client.render.entity.state.ItemEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
@@ -28,8 +25,6 @@ import java.util.*;
 
 @Mixin(ItemEntityRenderer.class)
 public class ItemEntityRendererMixin {
-    @Unique
-    private static final Identifier BEACON_BEAM_TEXTURE = Identifier.of("minecraft","textures/entity/beacon_beam.png");
     @Unique
     private static final Set<String> seenItems = new HashSet<>();
 

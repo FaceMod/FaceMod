@@ -34,6 +34,7 @@ public class ItemEntityRendererMixin {
     String rarity = "";
     @Unique
     String itemtype = "";
+    @Unique
     Boolean skipItem = false;
 
     @Inject(method = "render*", at = @At("HEAD"))

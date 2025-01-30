@@ -23,6 +23,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
 
+import static io.github.facemod.item.util.Unicode.capitalizeWords;
+
 @Mixin(ItemEntityRenderer.class)
 public class ItemEntityRendererMixin {
     @Unique
@@ -98,10 +100,15 @@ public class ItemEntityRendererMixin {
                 return;
             }
 
-            if (!loreList.contains(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags)
-                    && !FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags.isEmpty()) {
-                System.out.println("Filter Tags: " + FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags);
-                System.out.println("Lore: " + loreList);
+            boolean containsTag = false;
+            for (String lores : loreList) {
+                if (lores.contains(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags)) {
+                    containsTag = true;
+                    break;
+                }
+            }
+
+            if (!containsTag) {
                 return;
             }
 
@@ -114,7 +121,7 @@ public class ItemEntityRendererMixin {
 
             if (!seenItems.contains(name)) {
                 System.out.println("ItemEntityRenderer itemKey: " + itemStack);
-                FaceModInitializer.INSTANCE.CLIENT.player.sendMessage(Text.of("[FaceMod] >> " + rarity + " " + itemtype
+                FaceModInitializer.INSTANCE.CLIENT.player.sendMessage(Text.of("[FaceMod] >> " + capitalizeWords(rarity) + " " + capitalizeWords(itemtype)
                         + " with " + FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags + " dropped!"), false);
                 seenItems.add(name);
             }

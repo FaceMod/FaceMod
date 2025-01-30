@@ -54,6 +54,25 @@ public class Unicode {
 
         return decoded.toString();
     }
+
+    public static String capitalizeWords(String input) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+
+        String[] words = input.split("\\s+"); // Split by spaces
+        StringBuilder result = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                result.append(Character.toUpperCase(word.charAt(0)))  // Capitalize first letter
+                        .append(word.substring(1))  // Append the rest
+                        .append(" ");  // Re-add space
+            }
+        }
+
+        return result.toString().trim(); // Trim to remove trailing space
+    }
 }
 
 

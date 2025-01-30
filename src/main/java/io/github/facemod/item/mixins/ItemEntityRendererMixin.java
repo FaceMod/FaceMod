@@ -127,15 +127,25 @@ public class ItemEntityRendererMixin {
                 return;
             }
 
-            boolean containsTag = false;
-            for (String lores : loreList) {
-                if (lores.contains(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags)) {
-                    containsTag = true;
+            boolean containsAllTags = true;
+
+            for (String tag : FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags) {
+                boolean tagFound = false;
+
+                for (String lores : loreList) {
+                    if (lores.contains(tag)) {
+                        tagFound = true;
+                        break;
+                    }
+                }
+
+                if (!tagFound) {
+                    containsAllTags = false;
                     break;
                 }
             }
 
-            if (!containsTag) {
+            if (!containsAllTags) {
                 return;
             }
 
@@ -149,7 +159,7 @@ public class ItemEntityRendererMixin {
             if (!seenItems.contains(name)) {
                 System.out.println("ItemEntityRenderer itemKey: " + itemStack);
                 FaceModInitializer.INSTANCE.CLIENT.player.sendMessage(Text.of("[FaceMod] >> " + capitalizeWords(rarity) + " " + capitalizeWords(itemtype)
-                        + " with " + FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags + " dropped!"), false);
+                        + " with " + FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags.toString() + " dropped!"), false);
                 seenItems.add(name);
             }
 

@@ -89,9 +89,8 @@ public class FaceConfig implements ConfigData {
             @ConfigEntry.Gui.CollapsibleObject()
             public selectGear selectGear = new selectGear();
 
-            @ConfigEntry.Gui.Tooltip
-            public String filterTags = "";
-
+            @ConfigEntry.Gui.NoTooltip
+            public List<String> filterTags = new ArrayList<>();
         }
 
         public static class selectGear {

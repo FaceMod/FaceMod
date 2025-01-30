@@ -55,6 +55,10 @@ public class ItemEntityRendererMixin {
             ArrayList<String> loreList = new ArrayList<>();
             lore.lines().forEach(l -> loreList.add(l.getString()));
 
+            if (loreList.isEmpty()) {
+                return;
+            }
+
             int categorieIndex = -1;
             for (int i = 0; i < loreList.size(); i++) {
                 String l = loreList.get(i);

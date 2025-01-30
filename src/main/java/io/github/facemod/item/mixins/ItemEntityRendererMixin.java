@@ -110,7 +110,7 @@ public class ItemEntityRendererMixin {
             }
 
             Vec3d itemPos = new Vec3d(renderState.x, renderState.y, renderState.z);
-            String name = itemStack.getName().getString().toLowerCase();
+            String name = map.get(DataComponentTypes.CUSTOM_NAME).getString().toLowerCase();
 
             if (!seenItems.contains(name)) {
                 System.out.println("ItemEntityRenderer itemKey: " + itemStack);

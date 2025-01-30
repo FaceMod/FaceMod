@@ -100,6 +100,8 @@ public class ItemEntityRendererMixin {
 
             if (!loreList.contains(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags)
                     && !FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags.isEmpty()) {
+                System.out.println("Filter Tags: " + FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags);
+                System.out.println("Lore: " + loreList);
                 return;
             }
 
@@ -108,13 +110,13 @@ public class ItemEntityRendererMixin {
             }
 
             Vec3d itemPos = new Vec3d(renderState.x, renderState.y, renderState.z);
-            String itemKey = itemStack.getItem().toString() + ":" + Math.round(itemPos.x) + ":" + Math.round(itemPos.y) + ":" + Math.round(itemPos.z);
+            String name = itemStack.getName().getString().toLowerCase();
 
-            if (!seenItems.contains(itemKey)) {
-                System.out.println("ItemEntityRenderer itemKey: " + itemKey);
+            if (!seenItems.contains(name)) {
+                System.out.println("ItemEntityRenderer itemKey: " + itemStack);
                 FaceModInitializer.INSTANCE.CLIENT.player.sendMessage(Text.of("[FaceMod] >> " + rarity + " " + itemtype
                         + " with " + FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags + " dropped!"), false);
-                seenItems.add(itemKey);
+                seenItems.add(name);
             }
 
             ClientWorld world = MinecraftClient.getInstance().world;

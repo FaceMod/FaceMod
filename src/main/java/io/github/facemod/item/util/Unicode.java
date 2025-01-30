@@ -15,6 +15,10 @@ public class Unicode {
     public String mappedLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ'";
     String smallUnicode = "乀乁乂乃乄久乆乇么义乊之乌乍乎乏乐乑乒乓乔乕乖乗乘乙乚"; // Ascent: 14
     String bigUnicode = "俿倀倁倂倃倄倅倆倇倈倉倊個倌倍倎倏倖倗倘候倚倛倜倝倞借"; // Ascent: 62
+    public  String potionUnicode = "下";
+    public  String bookUnicode = "出";
+    public  String gemUnicode = "丈";
+
     public  final Set<Character> SMALL_UNICODE_SET = new HashSet<>();
     public  final Set<Character> BIG_UNICODE_SET = new HashSet<>();
 

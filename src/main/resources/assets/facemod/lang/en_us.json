@@ -16,6 +16,7 @@
   "text.autoconfig.FaceMod.option.general.playerListHeightOffset": "PlayerList Offset",
 
   "text.autoconfig.FaceMod.option.inventory.customBank": "Custom Bank (Experimental)",
+  "text.autoconfig.FaceMod.option.inventory.customBank.@Tooltip": "Nonfunctional, A Purely Visual Proof of Concept.",
   "text.autoconfig.FaceMod.option.inventory.autoTool": "Auto Tool",
   "text.autoconfig.FaceMod.option.inventory.autoTool.enabled": "Enabled",
   "text.autoconfig.FaceMod.option.inventory.dropHighlight": "Highlight Drops",

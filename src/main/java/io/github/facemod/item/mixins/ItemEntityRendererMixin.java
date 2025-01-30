@@ -1,6 +1,7 @@
 package io.github.facemod.item.mixins;
 
 import io.github.facemod.FaceModInitializer;
+import io.github.facemod.item.util.Unicode;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
@@ -29,6 +30,11 @@ import static io.github.facemod.item.util.Unicode.capitalizeWords;
 public class ItemEntityRendererMixin {
     @Unique
     private static final Set<String> seenItems = new HashSet<>();
+    @Unique
+    String rarity = "";
+    @Unique
+    String itemtype = "";
+    Boolean skipItem = false;
 
     @Inject(method = "render*", at = @At("HEAD"))
     public void onRender(ItemEntityRenderState renderState, MatrixStack matrixStack,
@@ -52,6 +58,25 @@ public class ItemEntityRendererMixin {
             int categorieIndex = -1;
             for (int i = 0; i < loreList.size(); i++) {
                 String l = loreList.get(i);
+
+                if (loreList.get(i).contains(FaceModInitializer.INSTANCE.unicode.potionUnicode)){
+                    itemtype = "potion";
+                    skipItem = true;
+                    break;
+                }
+
+                if (loreList.get(i).contains(FaceModInitializer.INSTANCE.unicode.bookUnicode)){
+                    itemtype = "enchantmentbook";
+                    skipItem = true;
+                    break;
+                }
+
+                if (loreList.get(i).contains(FaceModInitializer.INSTANCE.unicode.gemUnicode)){
+                    itemtype = "socketgem";
+                    skipItem = true;
+                    break;
+                }
+
                 String decodedLine = FaceModInitializer.INSTANCE.unicode.decode(l);
                 String customName = Objects.requireNonNull(map.get(DataComponentTypes.CUSTOM_NAME)).getString().toLowerCase();
 
@@ -69,22 +94,24 @@ public class ItemEntityRendererMixin {
                 }
             }
 
-            if (categorieIndex == -1) {
+            if (categorieIndex == -1 && itemtype.isEmpty()) {
                 System.out.println("No categories found for " + itemStack.getItem().getTranslationKey());
                 return;
             }
 
-            String cleanedCategory = FaceModInitializer.INSTANCE.unicode.decode(loreList.get(categorieIndex))
-                    .replaceAll("[^A-Z' ]", "");
-            int splitIndex = cleanedCategory.indexOf("'");
+            if (!skipItem) {
+                String cleanedCategory = FaceModInitializer.INSTANCE.unicode.decode(loreList.get(categorieIndex))
+                        .replaceAll("[^A-Z' ]", "");
+                int splitIndex = cleanedCategory.indexOf("'");
 
-            if (splitIndex == -1) {
-                System.out.println("Invalid category format: " + cleanedCategory);
-                return;
+                if (splitIndex == -1) {
+                    System.out.println("Invalid category format: " + cleanedCategory);
+                    return;
+                }
+
+                rarity = cleanedCategory.substring(0, cleanedCategory.indexOf("'")).trim().toLowerCase();
+                itemtype = cleanedCategory.substring(cleanedCategory.indexOf("'") + 1).trim().toLowerCase();
             }
-
-            String rarity = cleanedCategory.substring(0, cleanedCategory.indexOf("'")).trim().toLowerCase();
-            String itemtype = cleanedCategory.substring(cleanedCategory.indexOf("'") + 1).trim().toLowerCase();
 
             System.out.println("ItemEntityRenderer Rarity: " + rarity);
             System.out.println("ItemEntityRenderer Itemtype: " + itemtype);

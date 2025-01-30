@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.lwjgl.opengl.GL11.GL_NO_ERROR;
+import static org.lwjgl.opengl.GL11.glGetError;
+
 @Mixin(ItemEntityRenderer.class)
 public class ItemEntityRendererMixin {
 
@@ -97,7 +100,6 @@ public class ItemEntityRendererMixin {
                     .replaceAll("[^A-Z' ]", "");
 
             System.out.println("ItemEntityRenderer Category (Cleaned): " + cleanedCategory);
-
         }
     }
 }

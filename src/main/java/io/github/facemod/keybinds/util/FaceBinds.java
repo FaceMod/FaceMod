@@ -1,8 +1,6 @@
 package io.github.facemod.keybinds.util;
 
-import io.github.facemod.FaceModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import io.github.facemod.keybinds.mixins.KeyBindingAccessor;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
@@ -17,19 +15,8 @@ public class FaceBinds {
     public static KeyBinding SPELL_FOUR = add("facemod.key.spellFour", GLFW.GLFW_KEY_4);
     public static KeyBinding POTION_HEALING = add("facemod.key.potionHeal", GLFW.GLFW_KEY_R);
     public static KeyBinding POTION_ENERGY = add("facemod.key.potionEnergy", GLFW.GLFW_KEY_G);
-    //public static KeyBinding POTION_EXTRA = add("facemod.key.potionExtra", GLFW.GLFW_KEY_UNKNOWN);
-
-
 
     public static KeyBinding add(String key, int defaultKey) {
         return KeyBindingHelper.registerKeyBinding(new KeyBinding(key, InputUtil.Type.KEYSYM, defaultKey, "facemod.title"));
-    }
-
-    public static boolean isPressed(KeyBinding key) {
-        var code = ((KeyBindingAccessor) key).getBoundKey().getCode();
-        if (code == -1)
-            return false;
-        return InputUtil.isKeyPressed(FaceModInitializer.INSTANCE.CLIENT.getWindow().getHandle(), code);
-
     }
 }

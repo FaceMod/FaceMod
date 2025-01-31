@@ -7,6 +7,8 @@ import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
+import java.util.Objects;
+
 public class BindHandler {
     private static final FaceModInitializer INSTANCE = FaceModInitializer.INSTANCE;
 
@@ -56,12 +58,13 @@ public class BindHandler {
             return;
         }
 
-        if (potionSlot < 0 || potionSlot > 8) return; // Ensure slot is valid
+        if (potionSlot < 0 || potionSlot > 8) return;
 
         INSTANCE.CLIENT.player.getInventory().selectedSlot = potionSlot;
-        INSTANCE.CLIENT.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(potionSlot));
+        Objects.requireNonNull(INSTANCE.CLIENT.getNetworkHandler()).sendPacket(new UpdateSelectedSlotC2SPacket(potionSlot));
 
-        Hand hand = Hand.MAIN_HAND; // Assuming potion is in main hand
+        Hand hand = Hand.MAIN_HAND;
+        assert INSTANCE.CLIENT.interactionManager != null;
         INSTANCE.CLIENT.interactionManager.interactItem(INSTANCE.CLIENT.player, hand);
 
         INSTANCE.CLIENT.execute(() -> {
@@ -87,12 +90,13 @@ public class BindHandler {
             return;
         }
 
-        if (potionSlot < 0 || potionSlot > 8) return; // Ensure slot is valid
+        if (potionSlot < 0 || potionSlot > 8) return;
 
         INSTANCE.CLIENT.player.getInventory().selectedSlot = potionSlot;
-        INSTANCE.CLIENT.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(potionSlot));
+        Objects.requireNonNull(INSTANCE.CLIENT.getNetworkHandler()).sendPacket(new UpdateSelectedSlotC2SPacket(potionSlot));
 
         Hand hand = Hand.MAIN_HAND; // Assuming potion is in main hand
+        assert INSTANCE.CLIENT.interactionManager != null;
         INSTANCE.CLIENT.interactionManager.interactItem(INSTANCE.CLIENT.player, hand);
 
         INSTANCE.CLIENT.execute(() -> {

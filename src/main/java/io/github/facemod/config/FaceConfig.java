@@ -6,7 +6,6 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("unused")

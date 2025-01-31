@@ -123,7 +123,7 @@ public class ItemEntityRendererMixin {
                 if (gearType == null) {
                     System.out.println("GearType Null");
                 } else {
-                    System.out.println("GearType Disabled: " + gearType.enabled);
+                    System.out.println("GearType Disabled: " + false);
                 }
                 return;
             }
@@ -144,7 +144,7 @@ public class ItemEntityRendererMixin {
             }
 
             Vec3d itemPos = new Vec3d(renderState.x, renderState.y, renderState.z);
-            String name = map.get(DataComponentTypes.CUSTOM_NAME).getString().toLowerCase();
+            String name = Objects.requireNonNull(map.get(DataComponentTypes.CUSTOM_NAME)).getString().toLowerCase();
 
             if (!seenItems.contains(name)) {
                 System.out.println("ItemEntityRenderer itemKey: " + itemStack);

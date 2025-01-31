@@ -119,9 +119,6 @@ public class ItemEntityRendererMixin {
 
             var gearType = getGearType(itemtype);
 
-            System.out.println("ItemEntityRenderer Rarity: " + rarity);
-            System.out.println("ItemEntityRenderer Itemtype: " + itemtype);
-
             if (gearType == null || !gearType.enabled) {
                 if (gearType == null) {
                     System.out.println("GearType Null");

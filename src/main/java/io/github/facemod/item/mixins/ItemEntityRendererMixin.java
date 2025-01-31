@@ -52,6 +52,10 @@ public class ItemEntityRendererMixin {
                 return;
             }
 
+            if (map == null) {
+                return;
+            }
+
             ArrayList<String> loreList = new ArrayList<>();
             lore.lines().forEach(l -> loreList.add(l.getString()));
 
@@ -96,6 +100,10 @@ public class ItemEntityRendererMixin {
                         break;
                     }
                 }
+            }
+
+            if (itemtype == null) {
+                return;
             }
 
             if (categorieIndex == -1 && itemtype.isEmpty()) {

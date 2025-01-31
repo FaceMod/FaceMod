@@ -36,7 +36,6 @@ public class FaceModInitializer implements ClientModInitializer {
         CONFIG = holder.getConfig();
         FaceConfig.holder = holder;
         unicode.init();
-        CONFIG.inventory.dropHighlight.filterTags.add("Physical Damage");
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> client.execute(() -> {
             ClientConnection connection = Objects.requireNonNull(client.getNetworkHandler()).getConnection();

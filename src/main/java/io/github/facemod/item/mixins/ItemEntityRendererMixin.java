@@ -1,6 +1,7 @@
 package io.github.facemod.item.mixins;
 
 import io.github.facemod.FaceModInitializer;
+import io.github.facemod.config.FaceConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
@@ -116,43 +117,32 @@ public class ItemEntityRendererMixin {
                 itemtype = cleanedCategory.substring(cleanedCategory.indexOf("'") + 1).trim().toLowerCase();
             }
 
+            var gearType = getGearType(itemtype);
+
             System.out.println("ItemEntityRenderer Rarity: " + rarity);
             System.out.println("ItemEntityRenderer Itemtype: " + itemtype);
 
-            List<String> typeList = FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.selectGear.getSelectedGear();
-            List<String> rarityList = FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.rarity.getSelectedRarities();
-
-            if (!typeList.contains(itemtype) && !typeList.isEmpty()) {
+            if (gearType == null || !gearType.enabled) {
+                if (gearType == null) {
+                    System.out.println("GearType Null");
+                } else {
+                    System.out.println("GearType Disabled: " + gearType.enabled);
+                }
                 return;
             }
 
-            if (!rarityList.contains(rarity) && !rarityList.isEmpty()) {
+            if (!isRaritySelected(gearType, rarity) && !isEmpty(gearType)) {
+                System.out.println("Rarity Disabled: " + rarity);
                 return;
             }
 
-            boolean containsAllTags = true;
-
-            for (String tag : FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags) {
-                boolean tagFound = false;
-
-                for (String lores : loreList) {
-                    if (lores.contains(tag)) {
-                        tagFound = true;
-                        break;
-                    }
-                }
-
-                if (!tagFound) {
-                    containsAllTags = false;
-                    break;
-                }
-            }
-
-            if (!containsAllTags) {
+            if (!matchesAllTags(gearType.filterTags, loreList) && !(gearType.filterTags.isEmpty())) {
+                System.out.println("GearType Filter: " + gearType.filterTags);
                 return;
             }
 
             if (FaceModInitializer.INSTANCE.CLIENT.player == null) {
+                System.out.println("Client Null");
                 return;
             }
 
@@ -162,7 +152,7 @@ public class ItemEntityRendererMixin {
             if (!seenItems.contains(name)) {
                 System.out.println("ItemEntityRenderer itemKey: " + itemStack);
                 FaceModInitializer.INSTANCE.CLIENT.player.sendMessage(Text.of("[FaceMod] >> " + capitalizeWords(rarity) + " " + capitalizeWords(itemtype)
-                        + " with " + FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.filterTags.toString() + " dropped!"), false);
+                        + " with " + gearType.filterTags.toString() + " dropped!"), false);
                 seenItems.add(name);
             }
 
@@ -181,5 +171,39 @@ public class ItemEntityRendererMixin {
             }
 
         }
+    }
+
+    @Unique
+    private FaceConfig.Inventory.GearType getGearType(String itemType) {
+        var gearConfig = FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.selectGear;
+
+        try {
+            java.lang.reflect.Field field = gearConfig.getClass().getDeclaredField(itemType.toLowerCase());
+            return (FaceConfig.Inventory.GearType) field.get(gearConfig);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            return null;
+        }
+    }
+
+    @Unique
+    private boolean isRaritySelected(FaceConfig.Inventory.GearType gearType, String rarity) {
+        return switch (rarity) {
+            case "common" -> gearType.rarity.common;
+            case "uncommon" -> gearType.rarity.uncommon;
+            case "rare" -> gearType.rarity.rare;
+            case "epic" -> gearType.rarity.epic;
+            case "unique" -> gearType.rarity.unique;
+            default -> false;
+        };
+    }
+
+    @Unique
+    private boolean isEmpty(FaceConfig.Inventory.GearType gearType){
+        return !gearType.rarity.common && !gearType.rarity.uncommon && !gearType.rarity.rare && !gearType.rarity.epic && !gearType.rarity.unique;
+    }
+
+    @Unique
+    private boolean matchesAllTags(List<String> filterTags, List<String> loreList) {
+        return filterTags.stream().allMatch(tag -> loreList.stream().anyMatch(lore -> lore.contains(tag)));
     }
 }

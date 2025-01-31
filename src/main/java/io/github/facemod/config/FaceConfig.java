@@ -84,139 +84,116 @@ public class FaceConfig implements ConfigData {
             public boolean enabled = false;
 
             @ConfigEntry.Gui.CollapsibleObject()
-            public selectRarity rarity = new selectRarity();
-
-            @ConfigEntry.Gui.CollapsibleObject()
             public selectGear selectGear = new selectGear();
-
-            @ConfigEntry.Gui.NoTooltip
-            public List<String> filterTags = new ArrayList<>();
         }
 
         public static class selectGear {
-            @ConfigEntry.Gui.NoTooltip
-            public boolean sword = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean staff = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean wand = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean pistol = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean warhammer = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean longbow = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean shortbow = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean battleaxe = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean dagger = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean mace = false;
-
-            @ConfigEntry.Gui.NoTooltip
-            public boolean hoe = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean pickaxe = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean rod = false;
-
-            @ConfigEntry.Gui.NoTooltip
-            public boolean spellbook = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean quiver = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean ammunition = false;
-
-            @ConfigEntry.Gui.NoTooltip
-            public boolean ring = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean earring = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean necklace = false;
-
-            @ConfigEntry.Gui.NoTooltip
-            public boolean helmet = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean coif = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean hat = false;
-
-            @ConfigEntry.Gui.NoTooltip
-            public boolean platebody = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean robe = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean tunic = false;
-
-            @ConfigEntry.Gui.NoTooltip
-            public boolean leggings = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean platelegs = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean skirt = false;
-
-
-            @ConfigEntry.Gui.NoTooltip
-            public boolean boots = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean shoes = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean greaves = false;
-
-            @ConfigEntry.Gui.NoTooltip
-            public boolean socketgem = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean enchantmentbook = false;
-            @ConfigEntry.Gui.NoTooltip
-            public boolean potion = false;
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType sword = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType staff = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType wand = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType pistol = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType warhammer = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType longbow = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType shortbow = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType battleaxe = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType dagger = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType mace = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType hoe = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType pickaxe = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType rod = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType spellbook = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType quiver = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType ammunition = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType ring = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType earring = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType necklace = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType helmet = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType coif = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType hat = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType platebody = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType robe = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType tunic = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType leggings = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType platelegs = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType skirt = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType boots = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType shoes = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType greaves = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType socketgem = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType enchantmentbook = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType potion = new GearType();
 
             public List<String> getSelectedGear() {
                 List<String> selectedGear = new ArrayList<>();
 
-                if (sword) selectedGear.add("sword");
-                if (staff) selectedGear.add("staff");
-                if (wand) selectedGear.add("wand");
-                if (pistol) selectedGear.add("pistol");
-                if (warhammer) selectedGear.add("warhammer");
-                if (longbow) selectedGear.add("longbow");
-                if (shortbow) selectedGear.add("shortbow");
-                if (battleaxe) selectedGear.add("battleaxe");
-                if (dagger) selectedGear.add("dagger");
-                if (mace) selectedGear.add("mace");
-
-                if (hoe) selectedGear.add("hoe");
-                if (pickaxe) selectedGear.add("pickaxe");
-                if (rod) selectedGear.add("rod");
-
-                if (spellbook) selectedGear.add("spellbook");
-                if (quiver) selectedGear.add("quiver");
-                if (ammunition) selectedGear.add("ammunition");
-
-                if (ring) selectedGear.add("ring");
-                if (earring) selectedGear.add("earring");
-                if (necklace) selectedGear.add("necklace");
-
-                if (helmet) selectedGear.add("helmet");
-                if (coif) selectedGear.add("coif");
-                if (hat) selectedGear.add("hat");
-
-                if (platebody) selectedGear.add("platebody");
-                if (robe) selectedGear.add("robe");
-                if (tunic) selectedGear.add("tunic");
-
-                if (leggings) selectedGear.add("leggings");
-                if (platelegs) selectedGear.add("platelegs");
-                if (skirt) selectedGear.add("skirt");
-
-                if (boots) selectedGear.add("boots");
-                if (shoes) selectedGear.add("shoes");
-                if (greaves) selectedGear.add("greaves");
-
-                if (socketgem) selectedGear.add("socketgem");
-                if (enchantmentbook) selectedGear.add("enchantmentbook");
-                if (potion) selectedGear.add("potion");
+                if (sword.enabled) selectedGear.add("sword");
+                if (staff.enabled) selectedGear.add("staff");
+                if (wand.enabled) selectedGear.add("wand");
+                if (pistol.enabled) selectedGear.add("pistol");
+                if (warhammer.enabled) selectedGear.add("warhammer");
+                if (longbow.enabled) selectedGear.add("longbow");
+                if (shortbow.enabled) selectedGear.add("shortbow");
+                if (battleaxe.enabled) selectedGear.add("battleaxe");
+                if (dagger.enabled) selectedGear.add("dagger");
+                if (mace.enabled) selectedGear.add("mace");
+                if (hoe.enabled) selectedGear.add("hoe");
+                if (pickaxe.enabled) selectedGear.add("pickaxe");
+                if (rod.enabled) selectedGear.add("rod");
+                if (spellbook.enabled) selectedGear.add("spellbook");
+                if (quiver.enabled) selectedGear.add("quiver");
+                if (ammunition.enabled) selectedGear.add("ammunition");
+                if (ring.enabled) selectedGear.add("ring");
+                if (earring.enabled) selectedGear.add("earring");
+                if (necklace.enabled) selectedGear.add("necklace");
+                if (helmet.enabled) selectedGear.add("helmet");
+                if (coif.enabled) selectedGear.add("coif");
+                if (hat.enabled) selectedGear.add("hat");
+                if (platebody.enabled) selectedGear.add("platebody");
+                if (robe.enabled) selectedGear.add("robe");
+                if (tunic.enabled) selectedGear.add("tunic");
+                if (leggings.enabled) selectedGear.add("leggings");
+                if (platelegs.enabled) selectedGear.add("platelegs");
+                if (skirt.enabled) selectedGear.add("skirt");
+                if (boots.enabled) selectedGear.add("boots");
+                if (shoes.enabled) selectedGear.add("shoes");
+                if (greaves.enabled) selectedGear.add("greaves");
+                if (socketgem.enabled) selectedGear.add("socketgem");
+                if (enchantmentbook.enabled) selectedGear.add("enchantmentbook");
+                if (potion.enabled) selectedGear.add("potion");
 
                 return selectedGear;
             }
@@ -234,20 +211,35 @@ public class FaceConfig implements ConfigData {
             @ConfigEntry.Gui.NoTooltip
             public boolean unique = false;
 
-            public List<String> getSelectedRarities() {
+            public List<String> getSelectedRarities(String gearName) {
                 List<String> selectedRarities = new ArrayList<>();
-
-                if (common) selectedRarities.add("common");
-                if (uncommon) selectedRarities.add("uncommon");
-                if (rare) selectedRarities.add("rare");
-                if (epic) selectedRarities.add("epic");
-                if (unique) selectedRarities.add("unique");
-
+                try {
+                    java.lang.reflect.Field field = this.getClass().getDeclaredField(gearName);
+                    GearType gear = (GearType) field.get(this);
+                    if (gear.enabled) {
+                        if (gear.rarity.common) selectedRarities.add("common");
+                        if (gear.rarity.uncommon) selectedRarities.add("uncommon");
+                        if (gear.rarity.rare) selectedRarities.add("rare");
+                        if (gear.rarity.epic) selectedRarities.add("epic");
+                        if (gear.rarity.unique) selectedRarities.add("unique");
+                    }
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    System.out.println("Invalid gear type: " + gearName);
+                }
                 return selectedRarities;
             }
         }
 
+        public static class GearType {
+            @ConfigEntry.Gui.NoTooltip
+            public boolean enabled = false;
 
+            @ConfigEntry.Gui.CollapsibleObject
+            public selectRarity rarity = new selectRarity();
+
+            @ConfigEntry.Gui.NoTooltip
+            public List<String> filterTags = new ArrayList<>();
+        }
     }
 
 }

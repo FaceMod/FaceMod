@@ -4,6 +4,7 @@ import io.github.facemod.FaceModInitializer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
+import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
 public class BindHandler {
@@ -50,6 +51,11 @@ public class BindHandler {
         int previousSlot = inventory.selectedSlot;
         int potionSlot = findLifePotion(inventory);
 
+        if (potionSlot == -1){
+            INSTANCE.CLIENT.player.sendMessage(Text.of("[FaceMod] >> No Health Potion in HotBar."),false);
+            return;
+        }
+
         if (potionSlot < 0 || potionSlot > 8) return; // Ensure slot is valid
 
         INSTANCE.CLIENT.player.getInventory().selectedSlot = potionSlot;
@@ -76,7 +82,10 @@ public class BindHandler {
         int previousSlot = inventory.selectedSlot;
         int potionSlot = findEnergyPotion(inventory);
 
-        if (potionSlot == -1) return;
+        if (potionSlot == -1) {
+            INSTANCE.CLIENT.player.sendMessage(Text.of("[FaceMod] >> No Energy Potion in HotBar."),false);
+            return;
+        }
 
         if (potionSlot < 0 || potionSlot > 8) return; // Ensure slot is valid
 

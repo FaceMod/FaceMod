@@ -174,7 +174,6 @@ public class ItemEntityRendererMixin {
                         itemPos.z,
                         0, 0.05, 0);
             }
-
         }
     }
 

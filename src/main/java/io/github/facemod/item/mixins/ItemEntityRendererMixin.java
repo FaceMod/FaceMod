@@ -143,7 +143,7 @@ public class ItemEntityRendererMixin {
                 }
             }
 
-            if (!matchesAllTags(gearType.filterTags, loreList) && !(gearType.filterTags.isEmpty())) {
+            if (!matchesAllTags(gearType.filterTags, loreList) && !(gearType.filterTags.isEmpty())) { //TODO: Implement Conditionals
                 System.out.println("GearType Filter: " + gearType.filterTags);
                 return;
             }
@@ -212,4 +212,10 @@ public class ItemEntityRendererMixin {
     private boolean matchesAllTags(List<String> filterTags, List<String> loreList) {
         return filterTags.stream().allMatch(tag -> loreList.stream().anyMatch(lore -> lore.contains(tag)));
     }
+
+    @Unique
+    private static boolean hasConditionalOperator(String tag) {
+        return tag.matches(".*(>=|<=|==|>|<)\\s*-?\\d+\\s+.+");
+    }
+
 }

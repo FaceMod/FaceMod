@@ -136,9 +136,11 @@ public class ItemEntityRendererMixin {
                 return;
             }
 
-            if (!isRaritySelected(gearType, rarity) && !isEmpty(gearType)) {
-                System.out.println("Rarity Disabled: " + rarity);
-                return;
+            if(!skipItem) {
+                if (!isRaritySelected(gearType, rarity) && !isEmpty(gearType)) {
+                    System.out.println("Rarity Disabled: " + rarity);
+                    return;
+                }
             }
 
             if (!matchesAllTags(gearType.filterTags, loreList) && !(gearType.filterTags.isEmpty())) {

@@ -55,7 +55,7 @@ public class Unicode {
 
     public static String capitalizeWords(String input) {
         if (input == null || input.isEmpty()) {
-            return input;
+            return "";
         }
 
         String[] words = input.split("\\s+"); // Split by spaces

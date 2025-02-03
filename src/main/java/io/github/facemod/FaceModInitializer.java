@@ -45,10 +45,6 @@ public class FaceModInitializer implements ClientModInitializer {
             }
         }));
 
-        if (!FaceConfig.General.onFaceLand) {
-            return;
-        }
-
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> FaceConfig.General.onFaceLand = false);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -59,7 +55,6 @@ public class FaceModInitializer implements ClientModInitializer {
             Mount.update();
 
             handleKeyBinds();
-
         });
     }
 

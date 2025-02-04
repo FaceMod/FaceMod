@@ -149,7 +149,7 @@ public class ItemEntityRendererMixin {
             }
 
             if (!matchesAllTags(gearType.filterTags, loreList) && !(gearType.filterTags.isEmpty())) { //TODO: Implement Conditionals, Implement Check for it ifs a main stat or not based off color.
-                //System.out.println("GearType Filter: " + gearType.filterTags);
+                //System.out.println("GearType Filter: " + gearType.filterTags); //TODO: Elements of same type should be combined, ex 50 Fire Damage MS and 10 Fire Damage SS should be considered 60 Fire Damage when doing conditionals.
                 return;
             }
 

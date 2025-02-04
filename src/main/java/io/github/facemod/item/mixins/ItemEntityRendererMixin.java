@@ -68,6 +68,13 @@ public class ItemEntityRendererMixin {
                 return;
             }
 
+            Text customNameText = map.get(DataComponentTypes.CUSTOM_NAME);
+            if (customNameText == null) {
+                return;
+            }
+
+            String name = customNameText.getString().toLowerCase();
+
             int categorieIndex = -1;
             for (int i = 0; i < loreList.size(); i++) {
                 String l = loreList.get(i);
@@ -91,9 +98,8 @@ public class ItemEntityRendererMixin {
                 }
 
                 String decodedLine = FaceModInitializer.INSTANCE.unicode.decode(l);
-                String customName = Objects.requireNonNull(map.get(DataComponentTypes.CUSTOM_NAME)).getString().toLowerCase();
 
-                if (decodedLine.toLowerCase().contains(customName)) {
+                if (decodedLine.toLowerCase().contains(name)) {
                     continue;
                 }
 
@@ -150,7 +156,7 @@ public class ItemEntityRendererMixin {
 
             if (!matchesAllTags(gearType.filterTags, loreList) && !(gearType.filterTags.isEmpty())) { //TODO: Implement Conditionals, Implement Check for it ifs a main stat or not based off color.
                 //System.out.println("GearType Filter: " + gearType.filterTags); //TODO: Elements of same type should be combined, ex 50 Fire Damage MS and 10 Fire Damage SS should be considered 60 Fire Damage when doing conditionals.
-                return;
+                return; //TODO: Implement check for total substats.
             }
 
             if (FaceModInitializer.INSTANCE.CLIENT.player == null) {
@@ -159,7 +165,6 @@ public class ItemEntityRendererMixin {
             }
 
             Vec3d itemPos = new Vec3d(renderState.x, renderState.y, renderState.z);
-            String name = Objects.requireNonNull(map.get(DataComponentTypes.CUSTOM_NAME)).getString().toLowerCase();
 
             if (!seenItems.contains(name)) {
                 //System.out.println("ItemEntityRenderer itemKey: " + itemStack);

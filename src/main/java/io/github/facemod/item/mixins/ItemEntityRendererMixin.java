@@ -42,6 +42,9 @@ public class ItemEntityRendererMixin {
                          CallbackInfo ci) {
 
         if(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.enabled) {
+            skipItem = false;
+            rarity = "";
+            itemtype = "";
 
             ItemStack itemStack = renderState.stack;
 
@@ -107,7 +110,7 @@ public class ItemEntityRendererMixin {
             }
 
             if (categorieIndex == -1 && itemtype.isEmpty()) {
-                System.out.println("No categories found for " + itemStack.getItem().getTranslationKey());
+                //System.out.println("No categories found for " + itemStack.getItem().getTranslationKey());
                 return;
             }
 
@@ -117,7 +120,7 @@ public class ItemEntityRendererMixin {
                 int splitIndex = cleanedCategory.indexOf("'");
 
                 if (splitIndex == -1) {
-                    System.out.println("Invalid category format: " + cleanedCategory);
+                    //System.out.println("Invalid category format: " + cleanedCategory);
                     return;
                 }
 
@@ -129,27 +132,27 @@ public class ItemEntityRendererMixin {
 
             if (gearType == null || !gearType.enabled) {
                 if (gearType == null) {
-                    System.out.println("GearType Null");
+                    //System.out.println("GearType Null");
                 } else {
-                    System.out.println("GearType Disabled: " + false);
+                    //.out.println("GearType Disabled: " + false);
                 }
                 return;
             }
 
             if(!skipItem) {
                 if (!isRaritySelected(gearType, rarity) && !isEmpty(gearType)) {
-                    System.out.println("Rarity Disabled: " + rarity);
+                    //System.out.println("Rarity Disabled: " + rarity);
                     return;
                 }
             }
 
             if (!matchesAllTags(gearType.filterTags, loreList) && !(gearType.filterTags.isEmpty())) { //TODO: Implement Conditionals
-                System.out.println("GearType Filter: " + gearType.filterTags);
+                //System.out.println("GearType Filter: " + gearType.filterTags);
                 return;
             }
 
             if (FaceModInitializer.INSTANCE.CLIENT.player == null) {
-                System.out.println("Client Null");
+                //System.out.println("Client Null");
                 return;
             }
 
@@ -157,7 +160,7 @@ public class ItemEntityRendererMixin {
             String name = Objects.requireNonNull(map.get(DataComponentTypes.CUSTOM_NAME)).getString().toLowerCase();
 
             if (!seenItems.contains(name)) {
-                System.out.println("ItemEntityRenderer itemKey: " + itemStack);
+                //System.out.println("ItemEntityRenderer itemKey: " + itemStack);
                 FaceModInitializer.INSTANCE.CLIENT.player.sendMessage(Text.of("[FaceMod] >> " + capitalizeWords(rarity) + " " + capitalizeWords(itemtype)
                         + " with " + gearType.filterTags.toString() + " dropped!"), false);
                 seenItems.add(name);

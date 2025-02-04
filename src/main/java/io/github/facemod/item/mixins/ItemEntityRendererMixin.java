@@ -13,7 +13,9 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -146,7 +148,7 @@ public class ItemEntityRendererMixin {
                 }
             }
 
-            if (!matchesAllTags(gearType.filterTags, loreList) && !(gearType.filterTags.isEmpty())) { //TODO: Implement Conditionals
+            if (!matchesAllTags(gearType.filterTags, loreList) && !(gearType.filterTags.isEmpty())) { //TODO: Implement Conditionals, Implement Check for it ifs a main stat or not based off color.
                 //System.out.println("GearType Filter: " + gearType.filterTags);
                 return;
             }
@@ -161,8 +163,25 @@ public class ItemEntityRendererMixin {
 
             if (!seenItems.contains(name)) {
                 //System.out.println("ItemEntityRenderer itemKey: " + itemStack);
-                FaceModInitializer.INSTANCE.CLIENT.player.sendMessage(Text.of("[FaceMod] >> " + capitalizeWords(rarity) + " " + capitalizeWords(itemtype)
-                        + " with " + gearType.filterTags.toString() + " dropped!"), false);
+                FaceModInitializer.INSTANCE.CLIENT.player.sendMessage(
+                        Text.literal("財 ")
+                                .append(Text.literal(capitalizeWords(rarity) + " " + capitalizeWords(itemtype))
+                                        .styled(style -> style.withColor(getColor(rarity))))
+                                .append(Text.literal(" with ")
+                                        .styled(style -> style.withColor(Formatting.GRAY)))
+                                .append(Text.literal(gearType.filterTags.toString())
+                                        .styled(style -> style.withColor(Formatting.GREEN)))
+                                .append(Text.literal(" dropped \n→ ")
+                                        .styled(style -> style.withColor(Formatting.GRAY)))
+                                .append(Text.literal("[")
+                                        .append(Text.literal(itemStack.getName().getString())
+                                                .styled(style -> style
+                                                        .withColor(getColor(rarity))
+                                                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM,
+                                                                new HoverEvent.ItemStackContent(itemStack)))))
+                                        .append(Text.literal("]"))),
+                        false
+                );
                 seenItems.add(name);
             }
 
@@ -180,6 +199,17 @@ public class ItemEntityRendererMixin {
                         0, 0.05, 0);
             }
         }
+    }
+
+    private Formatting getColor(String rarity) {
+        return switch (rarity) {
+            case "common" -> Formatting.GRAY;
+            case "uncommon" -> Formatting.BLUE;
+            case "rare" -> Formatting.DARK_PURPLE;
+            case "epic" -> Formatting.RED;
+            case "unique" -> Formatting.GOLD;
+            default -> Formatting.WHITE;
+        };
     }
 
     @Unique

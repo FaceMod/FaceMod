@@ -201,6 +201,7 @@ public class ItemEntityRendererMixin {
         }
     }
 
+    @Unique
     private Formatting getColor(String rarity) {
         return switch (rarity) {
             case "common" -> Formatting.GRAY;

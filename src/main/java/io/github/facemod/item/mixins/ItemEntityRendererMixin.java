@@ -256,5 +256,4 @@ public class ItemEntityRendererMixin {
     private static boolean hasConditionalOperator(String tag) {
         return tag.matches(".*(>=|<=|==|>|<)\\s*-?\\d+\\s+.+");
     }
-
 }

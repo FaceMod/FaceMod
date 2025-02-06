@@ -138,7 +138,7 @@ public class FaceConfig implements ConfigData {
             @ConfigEntry.Gui.CollapsibleObject
             public GearType tunic = new GearType();
             @ConfigEntry.Gui.CollapsibleObject
-            public GearType leggings = new GearType();
+            public GearType pants = new GearType();
             @ConfigEntry.Gui.CollapsibleObject
             public GearType platelegs = new GearType();
             @ConfigEntry.Gui.CollapsibleObject
@@ -184,7 +184,7 @@ public class FaceConfig implements ConfigData {
                 if (platebody.enabled) selectedGear.add("platebody");
                 if (robe.enabled) selectedGear.add("robe");
                 if (tunic.enabled) selectedGear.add("tunic");
-                if (leggings.enabled) selectedGear.add("leggings");
+                if (pants.enabled) selectedGear.add("pants");
                 if (platelegs.enabled) selectedGear.add("platelegs");
                 if (skirt.enabled) selectedGear.add("skirt");
                 if (boots.enabled) selectedGear.add("boots");

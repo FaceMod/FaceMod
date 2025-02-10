@@ -135,6 +135,8 @@ public class ItemEntityRendererMixin {
                 rarity = cleanedCategory.substring(0, cleanedCategory.indexOf("'")).trim().toLowerCase();
                 itemtype = cleanedCategory.substring(cleanedCategory.indexOf("'") + 1).trim().toLowerCase();
             }
+            ArrayList<Character> common = new ArrayList<Character>();
+
 
             var gearType = getGearType(itemtype);
 

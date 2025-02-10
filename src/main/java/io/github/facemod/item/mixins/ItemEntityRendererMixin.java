@@ -135,8 +135,6 @@ public class ItemEntityRendererMixin {
                 rarity = cleanedCategory.substring(0, cleanedCategory.indexOf("'")).trim().toLowerCase();
                 itemtype = cleanedCategory.substring(cleanedCategory.indexOf("'") + 1).trim().toLowerCase();
             }
-            ArrayList<Character> common = new ArrayList<Character>();
-
 
             var gearType = getGearType(itemtype);
 
@@ -159,6 +157,7 @@ public class ItemEntityRendererMixin {
             if (!matchesAllTags(gearType.filterTags, loreList) && !(gearType.filterTags.isEmpty())) { //TODO: Implement Conditionals, Implement Check for it ifs a main stat or not based off color.
                 //System.out.println("GearType Filter: " + gearType.filterTags); //TODO: Elements of same type should be combined, ex 50 Fire Damage MS and 10 Fire Damage SS should be considered 60 Fire Damage when doing conditionals.
                 return; //TODO: Implement check for total substats.
+                //TODO: Implement general filter
             }
 
             if (FaceModInitializer.INSTANCE.CLIENT.player == null) {

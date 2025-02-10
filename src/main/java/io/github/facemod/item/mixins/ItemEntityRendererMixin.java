@@ -267,6 +267,7 @@ public class ItemEntityRendererMixin {
         return !gearType.rarity.common && !gearType.rarity.uncommon && !gearType.rarity.rare && !gearType.rarity.epic && !gearType.rarity.unique;
     }
 
+    @Unique
     private boolean isEmpty(){
         FaceConfig.Inventory.GearType gearType = FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general;
         return !gearType.rarity.common && !gearType.rarity.uncommon && !gearType.rarity.rare && !gearType.rarity.epic && !gearType.rarity.unique;

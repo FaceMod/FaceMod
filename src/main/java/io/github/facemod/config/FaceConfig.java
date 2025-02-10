@@ -82,7 +82,7 @@ public class FaceConfig implements ConfigData {
             @ConfigEntry.Gui.NoTooltip
             public boolean enabled = false;
 
-            @ConfigEntry.Gui.NoTooltip
+            @ConfigEntry.Gui.CollapsibleObject
             public GearType general = new GearType();
 
             @ConfigEntry.Gui.CollapsibleObject()

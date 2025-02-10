@@ -152,12 +152,18 @@ public class ItemEntityRendererMixin {
                     //System.out.println("Rarity Disabled: " + rarity);
                     return;
                 }
+                if (!isGeneralRarity(rarity) && !isEmpty()) {
+                    return;
+                }
             }
 
             if (!matchesAllTags(gearType.filterTags, loreList) && !(gearType.filterTags.isEmpty())) { //TODO: Implement Conditionals, Implement Check for it ifs a main stat or not based off color.
                 //System.out.println("GearType Filter: " + gearType.filterTags); //TODO: Elements of same type should be combined, ex 50 Fire Damage MS and 10 Fire Damage SS should be considered 60 Fire Damage when doing conditionals.
                 return; //TODO: Implement check for total substats.
-                //TODO: Implement general filter
+            }
+
+            if (!matchesAllTags(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.filterTags, loreList) && !(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.filterTags.isEmpty())) {
+                return;
             }
 
             if (FaceModInitializer.INSTANCE.CLIENT.player == null) {
@@ -244,9 +250,28 @@ public class ItemEntityRendererMixin {
     }
 
     @Unique
+    private boolean isGeneralRarity(String rarity) {
+        return switch (rarity) {
+            case "common" -> FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.rarity.common;
+            case "uncommon" -> FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.rarity.uncommon;
+            case "rare" -> FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.rarity.rare;
+            case "epic" -> FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.rarity.epic;
+            case "unique" -> FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.rarity.unique;
+            default -> false;
+        };
+
+    }
+
+    @Unique
     private boolean isEmpty(FaceConfig.Inventory.GearType gearType){
         return !gearType.rarity.common && !gearType.rarity.uncommon && !gearType.rarity.rare && !gearType.rarity.epic && !gearType.rarity.unique;
     }
+
+    private boolean isEmpty(){
+        FaceConfig.Inventory.GearType gearType = FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general;
+        return !gearType.rarity.common && !gearType.rarity.uncommon && !gearType.rarity.rare && !gearType.rarity.epic && !gearType.rarity.unique;
+    }
+
 
     @Unique
     private boolean matchesAllTags(List<String> filterTags, List<String> loreList) {

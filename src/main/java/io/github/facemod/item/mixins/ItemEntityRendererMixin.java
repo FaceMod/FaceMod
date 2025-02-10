@@ -152,7 +152,7 @@ public class ItemEntityRendererMixin {
                     //System.out.println("Rarity Disabled: " + rarity);
                     return;
                 }
-                if (!isGeneralRarity(rarity) && !isEmpty()) {
+                if (!isGeneralRarity(rarity) && !isEmpty() && FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.enabled) {
                     return;
                 }
             }
@@ -162,7 +162,7 @@ public class ItemEntityRendererMixin {
                 return; //TODO: Implement check for total substats.
             }
 
-            if (!matchesAllTags(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.filterTags, loreList) && !(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.filterTags.isEmpty())) {
+            if (FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.enabled && !matchesAllTags(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.filterTags, loreList) && !(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.filterTags.isEmpty())) {
                 return;
             }
 

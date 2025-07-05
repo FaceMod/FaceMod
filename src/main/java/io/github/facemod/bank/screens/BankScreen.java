@@ -302,13 +302,27 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
     }
 
     private void updateTabs() {
-        if (currentTab < MAX_TABS) {
-            switchToTab(currentTab);
-            currentTab++;
-            updateTabs();
-        } else {
+        currentTab = 0;
+        doTabSwitch = true;
+        processNextTab();
+    }
+
+    private void processNextTab() {
+        if (currentTab >= MAX_TABS) {
             currentTab = 0;
+            return;
         }
+
+        final int tab = currentTab++;
+        enqueueTask(() -> {
+            switchToTab(tab);
+            try {
+                Thread.sleep(100); // This delay still happens in the executor
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            processNextTab(); // Recursively continue after this task finishes
+        });
     }
 
     public boolean isHovered(int mouseX, int mouseY, int x, int y){
@@ -321,7 +335,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                     sendClickSlotPacket(tabIndex);
 
                     try {
-                        Thread.sleep(100); // <-- Recommended is 100, anything below has a small chance of skipping less than 50 and will skip pages -Spade
+                        Thread.sleep(125); // <-- Recommended is 100, anything below has a small chance of skipping less than 50 and will skip pages -Spade
                     } catch (InterruptedException e) {
                         System.err.println("sleep failed");
                     }

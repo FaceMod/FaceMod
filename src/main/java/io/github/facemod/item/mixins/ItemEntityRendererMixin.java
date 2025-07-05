@@ -2,6 +2,7 @@ package io.github.facemod.item.mixins;
 
 import io.github.facemod.FaceModInitializer;
 import io.github.facemod.config.FaceConfig;
+import io.github.facemod.item.ducks.ItemStackHolder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
@@ -37,6 +38,7 @@ public class ItemEntityRendererMixin {
     String itemtype = "";
     @Unique
     Boolean skipItem = false;
+    @Unique
 
     @Inject(method = "render*", at = @At("HEAD"))
     public void onRender(ItemEntityRenderState renderState, MatrixStack matrixStack,
@@ -48,7 +50,7 @@ public class ItemEntityRendererMixin {
             rarity = "";
             itemtype = "";
 
-            ItemStack itemStack = renderState.stack;
+            ItemStack itemStack = ((ItemStackHolder) renderState).facemod$getCapturedStack();
 
             ComponentMap map = itemStack.getComponents();
             LoreComponent lore = itemStack.get(DataComponentTypes.LORE);

@@ -11,13 +11,12 @@ group = "main.java.io.github.facemod"
 version = "1.0.0"
 
 dependencies {
-    minecraft("com.mojang:minecraft:1.21.3")
-    mappings("net.fabricmc:yarn:1.21.3+build.2:v2")
-    modImplementation("net.fabricmc:fabric-loader:0.16.10")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.114.0+1.21.3")
-    modApi("me.shedaniel.cloth:cloth-config-fabric:16.0.141")
-    modApi("com.terraformersmc:modmenu:12.0.0")
-}
+    minecraft("com.mojang:minecraft:1.21.4")
+    mappings("net.fabricmc:yarn:1.21.4+build.8:v2")
+    modImplementation("net.fabricmc:fabric-loader:0.16.14")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.119.3+1.21.4")
+    modApi("me.shedaniel.cloth:cloth-config-fabric:17.0.144")
+    modApi("com.terraformersmc:modmenu:13.0.3")}
 
 repositories {
     maven("https://maven.fabricmc.net/")

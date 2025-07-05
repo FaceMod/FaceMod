@@ -4,6 +4,7 @@ import io.github.facemod.item.util.Unicode;
 import io.github.facemod.keybinds.util.BindHandler;
 import io.github.facemod.keybinds.util.FaceBinds;
 import io.github.facemod.config.FaceConfig;
+import io.github.facemod.keybinds.util.KeypressTracker;
 import io.github.facemod.mount.util.Mount;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -73,35 +74,35 @@ public class FaceModInitializer implements ClientModInitializer {
     }
 
     public void handleKeyBinds() {
-        if (FaceBinds.MOUNT.wasPressed()) {
+        if (KeypressTracker.justPressed(FaceBinds.MOUNT)) {
             BindHandler.MOUNT();
         }
 
-        if (FaceBinds.ESCAPE.wasPressed()) {
+        if (KeypressTracker.justPressed(FaceBinds.ESCAPE)) {
             BindHandler.ESCAPE();
         }
 
-        if (FaceBinds.SPELL_ONE.wasPressed()) {
+        if (KeypressTracker.justPressed(FaceBinds.SPELL_ONE)) {
             BindHandler.SPELL_ONE();
         }
 
-        if (FaceBinds.SPELL_TWO.wasPressed()) {
+        if (KeypressTracker.justPressed(FaceBinds.SPELL_TWO)) {
             BindHandler.SPELL_TWO();
         }
 
-        if (FaceBinds.SPELL_THREE.wasPressed()) {
+        if (KeypressTracker.justPressed(FaceBinds.SPELL_THREE)) {
             BindHandler.SPELL_THREE();
         }
 
-        if (FaceBinds.SPELL_FOUR.wasPressed()) {
+        if (KeypressTracker.justPressed(FaceBinds.SPELL_FOUR)) {
             BindHandler.SPELL_FOUR();
         }
 
-        if (FaceBinds.POTION_HEALING.wasPressed()) {
+        if (KeypressTracker.justPressed(FaceBinds.POTION_HEALING)) {
             BindHandler.POTION_HEALING();
         }
 
-        if (FaceBinds.POTION_ENERGY.wasPressed()) {
+        if (KeypressTracker.justPressed(FaceBinds.POTION_ENERGY)) {
             BindHandler.POTION_ENERGY();
         }
     }

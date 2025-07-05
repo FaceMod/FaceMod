@@ -35,6 +35,10 @@
     {
       "config": "facemod.item.mixins.json",
       "environment": "client"
+    },
+    {
+      "config": "facemod.exp.mixins.json",
+      "environment": "client"
     }
   ],
   "depends": {

@@ -38,7 +38,6 @@ public class ItemEntityRendererMixin {
     String itemtype = "";
     @Unique
     Boolean skipItem = false;
-    @Unique
 
     @Inject(method = "render*", at = @At("HEAD"))
     public void onRender(ItemEntityRenderState renderState, MatrixStack matrixStack,

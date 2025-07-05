@@ -43,6 +43,10 @@ public class FaceModInitializer implements ClientModInitializer {
             if (connection != null && connection.getAddress() != null) {
                 String serverAddress = connection.getAddress().toString().toLowerCase();
                 FaceConfig.General.onFaceLand = serverAddress.startsWith("local") || serverAddress.contains("face.land");
+
+                if(FaceConfig.General.onFaceLand){
+                    //TODO: Cache all skill levels and current exp. start with calling /skills to open the gui
+                }
             }
         }));
 

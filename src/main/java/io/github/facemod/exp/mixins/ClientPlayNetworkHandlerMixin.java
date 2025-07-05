@@ -25,22 +25,29 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onGameMessage", at = @At("HEAD"))
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-        if (!Thread.currentThread().getName().equals("Render thread")) {
-            return;
-        }
         String txt = packet.content().getString();
-        Pattern pattern = Pattern.compile("Gained (\\w+) XP! \\(\\+(\\d+)XP\\)");
-        Matcher matcher = pattern.matcher(txt);
 
-        if (!matcher.find()) return;
+        Pattern normalPattern = Pattern.compile("Gained (\\w+) XP! \\(\\+(\\d+)XP\\)");
+        Pattern combatPattern = Pattern.compile("\\+(\\d{1,3}(,\\d{3})*)XP");
 
-        String category = matcher.group(1);
-        int amount = Integer.parseInt(matcher.group(2));
+        Matcher normalMatcher = normalPattern.matcher(txt);
+        Matcher combatMatcher = combatPattern.matcher(txt);
 
-        xpHistory.add(new ExpGain(category, amount));
-
-        trimOldEntries(xpHistory);
-        double currentRate = getExpPerHour(category, xpHistory);
-        System.out.printf("%s EXP/hr: %.2f%n", category, currentRate);
+        if (normalMatcher.find()) {
+            String category = normalMatcher.group(1);
+            int amount = Integer.parseInt(normalMatcher.group(2));
+            xpHistory.add(new ExpGain(category, amount));
+            trimOldEntries(xpHistory);
+            double currentRate = getExpPerHour(category, xpHistory);
+            System.out.printf("%s EXP/hr: %.2f%n", category, currentRate);
+        } else if (combatMatcher.find()) {
+            String amountStr = combatMatcher.group(1).replace(",", "");
+            int amount = Integer.parseInt(amountStr);
+            String category = "Combat";
+            xpHistory.add(new ExpGain(category, amount));
+            trimOldEntries(xpHistory);
+            double currentRate = getExpPerHour(category, xpHistory);
+            System.out.printf("%s EXP/hr: %.2f%n", category, currentRate);
+        }
     }
 }

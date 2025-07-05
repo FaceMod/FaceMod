@@ -8,11 +8,26 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BindHandler {
     private static final FaceModInitializer INSTANCE = FaceModInitializer.INSTANCE;
+    private static final long COOLDOWN_MS = 500; // Adjust cooldown duration as needed
+    private static final ConcurrentHashMap<String, Long> lastUsed = new ConcurrentHashMap<>();
+
+    private static boolean canUse(String action) {
+        long now = System.currentTimeMillis();
+        Long last = lastUsed.get(action);
+        if (last == null || now - last >= COOLDOWN_MS) {
+            lastUsed.put(action, now);
+            return true;
+        }
+        return false;
+    }
 
     public static void MOUNT() {
+        if (!canUse("MOUNT")) return;
+
         if(INSTANCE.CLIENT.player == null){
             return;
         }
@@ -26,26 +41,32 @@ public class BindHandler {
     }
 
     public static void ESCAPE() {
+        if (!canUse("ESCAPE")) return;
         INSTANCE.sendCommand("escape");
     }
 
     public static void SPELL_ONE() {
+        if (!canUse("SPELL_ONE")) return;
         FaceModInitializer.INSTANCE.swapHotbar(0);
     }
 
     public static void SPELL_TWO() {
+        if (!canUse("SPELL_TWO")) return;
         FaceModInitializer.INSTANCE.swapHotbar(1);
     }
 
     public static void SPELL_THREE() {
+        if (!canUse("SPELL_THREE")) return;
         FaceModInitializer.INSTANCE.swapHotbar(2);
     }
 
     public static void SPELL_FOUR() {
+        if (!canUse("SPELL_FOUR")) return;
         FaceModInitializer.INSTANCE.swapHotbar(3);
     }
 
     public static void POTION_HEALING() {
+        if (!canUse("POTION_HEALING")) return;
         if(INSTANCE.CLIENT.player == null){
             return;
         }
@@ -78,6 +99,7 @@ public class BindHandler {
         });    }
 
     public static void POTION_ENERGY() {
+        if (!canUse("POTION_ENERGY")) return;
         if(INSTANCE.CLIENT.player == null){
             return;
         }

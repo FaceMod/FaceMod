@@ -1,6 +1,7 @@
 package io.github.facemod.bank.screens;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -331,11 +332,15 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
     private void switchToTab(int tabIndex) {
         if (tabIndex >= 0 && tabIndex < MAX_TABS) {
+            assert MinecraftClient.getInstance().player != null;
+            int ping = Objects.requireNonNull(Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).getPlayerListEntry(
+                    MinecraftClient.getInstance().player.getUuid()
+            )).getLatency();
             enqueueTask(() -> {
                     sendClickSlotPacket(tabIndex);
 
                     try {
-                        Thread.sleep(125); // <-- Recommended is 100, anything below has a small chance of skipping less than 50 and will skip pages -Spade
+                        Thread.sleep(Math.max(100 + (ping* 2L), 120)); // <-- Recommended is 100, anything below has a small chance of skipping less than 50 and will skip pages -Spade
                     } catch (InterruptedException e) {
                         System.err.println("sleep failed");
                     }

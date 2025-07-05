@@ -1,6 +1,7 @@
 package io.github.facemod.exp.mixins;
 
 import io.github.facemod.exp.utils.ExpGain;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,6 +25,9 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onGameMessage", at = @At("HEAD"))
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
+        if (!Thread.currentThread().getName().equals("Render thread")) {
+            return;
+        }
         String txt = packet.content().getString();
         Pattern pattern = Pattern.compile("Gained (\\w+) XP! \\(\\+(\\d+)XP\\)");
         Matcher matcher = pattern.matcher(txt);

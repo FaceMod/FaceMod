@@ -8,12 +8,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class BindHandler {
     private static final FaceModInitializer INSTANCE = FaceModInitializer.INSTANCE;
-    private static final long COOLDOWN_MS = 500; // Adjust cooldown duration as needed
-    private static final ConcurrentHashMap<String, Long> lastUsed = new ConcurrentHashMap<>();
 
     public static void MOUNT() {
         if(INSTANCE.CLIENT.player == null){

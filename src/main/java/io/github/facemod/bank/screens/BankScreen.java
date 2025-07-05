@@ -340,7 +340,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                     sendClickSlotPacket(tabIndex);
 
                     try {
-                        Thread.sleep(Math.max(100 + (ping* 2L), 120)); // <-- Recommended is 100, anything below has a small chance of skipping less than 50 and will skip pages -Spade
+                        Thread.sleep(Math.max(100 + (ping), 120)); // <-- Recommended is 100, anything below has a small chance of skipping less than 50 and will skip pages -Spade
                     } catch (InterruptedException e) {
                         System.err.println("sleep failed");
                     }

@@ -31,7 +31,13 @@ public class InGameHudMixin {
         int screenWidth = client.getWindow().getScaledWidth();
         int padding = 5;
 
-        String expText = String.format("%s EXP/hr: %.0f", FaceExp.lastCategory, FaceExp.lastExpPerHour);
+        String expText = "";
+        if(FaceExp.lastExpPerHour != 0) {
+            expText = String.format("%s EXP/hr: %.0f", FaceExp.lastCategory, FaceExp.lastExpPerHour);
+        } else {
+            expText = String.format("%s EXP/hr: N/A", FaceExp.lastCategory);
+        }
+
         String ttlText = getTtlText();
 
         String recentText = String.format("+%d EXP (last 60s)", FaceExp.getRecentExpGain(FaceExp.lastCategory, Duration.ofSeconds(60)));

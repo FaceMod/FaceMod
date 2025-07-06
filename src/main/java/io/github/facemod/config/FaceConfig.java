@@ -49,6 +49,8 @@ public class FaceConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip
         public int playerListHeightOffset = 25;
 
+        @ConfigEntry.Gui.NoTooltip
+        public static boolean expCalculator = true;
     }
 
     @ConfigEntry.Category("inventory")

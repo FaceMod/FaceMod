@@ -46,7 +46,6 @@ public class FaceModInitializer implements ClientModInitializer {
                 FaceConfig.General.onFaceLand = serverAddress.startsWith("local") || serverAddress.contains("face.land");
 
                 if(FaceConfig.General.onFaceLand){
-                    //TODO: Cache all skill levels and current exp. start with calling /skills to open the gui
                     sendCommand("skills");
                 }
             }

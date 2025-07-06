@@ -29,10 +29,10 @@ public class InGameHudMixin {
         int boxHeight = 30;
         int padding = 5;
 
-        int x = screenWidth - boxWidth - padding;
+        int x = padding;
         int y = padding;
 
-        context.fill(x, y, x + boxWidth, y + boxHeight, 0xAA000000);
+        context.fill(x, y, x + boxWidth, y + boxHeight, 0x1ACCCCCC);
 
         String expText = String.format("%s EXP/hr: %.0f", FaceExp.lastCategory, FaceExp.lastExpPerHour);
 

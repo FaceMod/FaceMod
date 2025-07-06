@@ -139,12 +139,13 @@ public class ItemEntityRendererMixin {
 
             var gearType = getGearType(itemtype);
 
-            if (gearType == null || !gearType.enabled) {
-                if (gearType == null) {
-                    //System.out.println("GearType Null");
-                } else {
-                    //.out.println("GearType Disabled: " + false);
-                }
+            if (gearType == null) {
+//                    System.out.println("GearType Null");
+                return;
+            }
+
+            if (!FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.enabled && !gearType.enabled) {
+                //                    System.out.println("GearType Disabled: " + false);
                 return;
             }
 
@@ -154,6 +155,9 @@ public class ItemEntityRendererMixin {
                         //System.out.println("Rarity Disabled: " + rarity);
                         return;
                     }
+                    if (!gearType.enabled) {
+                        return;
+                    }
                 }
             }
 
@@ -161,6 +165,9 @@ public class ItemEntityRendererMixin {
                 if (!matchesAllTags(gearType.filterTags, loreList) && !(gearType.filterTags.isEmpty())) { //TODO: Implement Conditionals, Implement Check for it ifs a main stat or not based off color.
                     //System.out.println("GearType Filter: " + gearType.filterTags); //TODO: Elements of same type should be combined, ex 50 Fire Damage MS and 10 Fire Damage SS should be considered 60 Fire Damage when doing conditionals.
                     return; //TODO: Implement check for total substats.
+                }
+                if (!gearType.enabled) {
+                    return;
                 }
             }
 

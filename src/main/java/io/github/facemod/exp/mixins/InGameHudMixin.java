@@ -26,7 +26,7 @@ public class InGameHudMixin {
         int screenHeight = client.getWindow().getScaledHeight();
 
         int boxWidth = 120;
-        int boxHeight = 30;
+        int boxHeight = 15;
         int padding = 5;
 
         int x = padding;

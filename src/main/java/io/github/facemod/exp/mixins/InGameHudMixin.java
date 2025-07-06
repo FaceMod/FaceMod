@@ -72,7 +72,6 @@ public class InGameHudMixin {
             double hoursToNextLevel = (double) xpLeft / FaceExp.lastExpPerHour;
             long seconds = (long)(hoursToNextLevel * 3600);
 
-            // Format seconds into mm:ss
             long mins = seconds / 60;
             long secs = seconds % 60;
             ttlText = String.format("Next Level in: %dm %02ds", mins, secs);

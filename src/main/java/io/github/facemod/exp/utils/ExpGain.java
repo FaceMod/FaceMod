@@ -34,6 +34,8 @@ public class ExpGain {
         Instant start = filtered.get(0).time;
         Instant end = filtered.get(filtered.size() - 1).time;
 
+        if (Duration.between(start, end).getSeconds() < 60) return 0;
+
         double hours = Math.max(Duration.between(start, end).toMillis() / 3600000.0, 0.01); // prevent divide by 0
 
         return totalXP / hours;

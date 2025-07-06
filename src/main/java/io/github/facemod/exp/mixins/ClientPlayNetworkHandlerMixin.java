@@ -25,6 +25,10 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onGameMessage", at = @At("HEAD"))
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
+        if (!Thread.currentThread().getName().equals("Render thread")) {
+            return;
+        }
+
         String txt = packet.content().getString();
 
         Pattern normalPattern = Pattern.compile("Gained (\\w+) XP! \\(\\+(\\d+)XP\\)");
@@ -55,13 +59,15 @@ public class ClientPlayNetworkHandlerMixin {
             FaceExp.lastCategory = category;
             FaceExp.lastExpPerHour = currentRate;
         } else if (levelMatcher.find()) {
-            //TODO: Identify Category here, adjust skillCache level, set currentExp to 0.
+            //TODO: Identify Category here, adjust skillCache level, set currentExp to 0. for leveling up
             return;
         }
 
         for (FaceSkill skill : FaceExp.skillCache) {
             if (skill.category.equalsIgnoreCase(category)) {
+                System.out.println(skill.category + " : " + skill.currentExp + " + " + amount + " = ");
                 skill.currentExp += amount;
+                System.out.print(skill.currentExp + " / " + skill.maxExp + "\n");
                 break;
             }
         }

@@ -1,6 +1,22 @@
 package io.github.facemod.exp.utils;
 
+import org.spongepowered.asm.mixin.Unique;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
 public class FaceExp {
+    public static String lastCategory = "";
+    public static double lastExpPerHour = 0;
+    public static List<ExpGain> xpHistory = new ArrayList<>();
+
+    public static boolean hasRecentExpGain(Duration within) {
+        Instant now = Instant.now();
+        return xpHistory.stream().anyMatch(g -> Duration.between(g.time, now).compareTo(within) <= 0);
+    }
+
     public static double getCombatLevelExp(int level){
         return 75 + (level * 50) + (Math.pow(level,3.6) * (0.5 + (level*0.005))) + Math.pow(10000,((double) level /30 - 1));
     }

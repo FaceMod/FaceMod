@@ -1,6 +1,7 @@
 package io.github.facemod.exp.mixins;
 
 import io.github.facemod.exp.utils.ExpGain;
+import io.github.facemod.exp.utils.FaceExp;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
@@ -17,11 +18,10 @@ import java.util.regex.Pattern;
 
 import static io.github.facemod.exp.utils.ExpGain.getExpPerHour;
 import static io.github.facemod.exp.utils.ExpGain.trimOldEntries;
+import static io.github.facemod.exp.utils.FaceExp.xpHistory;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
-    @Unique
-    private static final List<ExpGain> xpHistory = new ArrayList<>();
 
     @Inject(method = "onGameMessage", at = @At("HEAD"))
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
@@ -39,7 +39,8 @@ public class ClientPlayNetworkHandlerMixin {
             xpHistory.add(new ExpGain(category, amount));
             trimOldEntries(xpHistory);
             double currentRate = getExpPerHour(category, xpHistory);
-            System.out.printf("%s EXP/hr: %.2f%n", category, currentRate);
+            FaceExp.lastCategory = category;
+            FaceExp.lastExpPerHour = currentRate;
         } else if (combatMatcher.find()) {
             String amountStr = combatMatcher.group(1).replace(",", "");
             int amount = Integer.parseInt(amountStr);
@@ -47,7 +48,8 @@ public class ClientPlayNetworkHandlerMixin {
             xpHistory.add(new ExpGain(category, amount));
             trimOldEntries(xpHistory);
             double currentRate = getExpPerHour(category, xpHistory);
-            System.out.printf("%s EXP/hr: %.2f%n", category, currentRate);
+            FaceExp.lastCategory = category;
+            FaceExp.lastExpPerHour = currentRate;
         }
     }
 }

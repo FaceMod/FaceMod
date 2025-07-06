@@ -2,6 +2,7 @@ package io.github.facemod.exp.mixins;
 
 import io.github.facemod.exp.utils.ExpGain;
 import io.github.facemod.exp.utils.FaceExp;
+import io.github.facemod.exp.utils.FaceSkill;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,10 +29,14 @@ public class ClientPlayNetworkHandlerMixin {
 
         Matcher normalMatcher = normalPattern.matcher(txt);
         Matcher combatMatcher = combatPattern.matcher(txt);
+        int amount = 0;
+        String category = "";
+
+        if (!normalMatcher.find() && !combatMatcher.find()) return;
 
         if (normalMatcher.find()) {
-            String category = normalMatcher.group(1);
-            int amount = Integer.parseInt(normalMatcher.group(2));
+            category = normalMatcher.group(1);
+            amount = Integer.parseInt(normalMatcher.group(2));
             xpHistory.add(new ExpGain(category, amount));
             trimOldEntries(xpHistory);
             double currentRate = getExpPerHour(category, xpHistory);
@@ -39,13 +44,21 @@ public class ClientPlayNetworkHandlerMixin {
             FaceExp.lastExpPerHour = currentRate;
         } else if (combatMatcher.find()) {
             String amountStr = combatMatcher.group(1).replace(",", "");
-            int amount = Integer.parseInt(amountStr);
-            String category = "Combat";
+            amount = Integer.parseInt(amountStr);
+            category = "Combat";
             xpHistory.add(new ExpGain(category, amount));
             trimOldEntries(xpHistory);
             double currentRate = getExpPerHour(category, xpHistory);
             FaceExp.lastCategory = category;
             FaceExp.lastExpPerHour = currentRate;
         }
+
+        for (FaceSkill skill : FaceExp.skillCache) {
+            if (skill.category.equalsIgnoreCase(category)) {
+                skill.currentExp += amount;
+                break;
+            }
+        }
+
     }
 }

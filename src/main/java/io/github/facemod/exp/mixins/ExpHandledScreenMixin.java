@@ -86,6 +86,7 @@ public abstract class ExpHandledScreenMixin {
             skillCache.add(new FaceSkill(skill, level, xp, max));
         }
 
+        init = false;
         MinecraftClient.getInstance().player.closeHandledScreen();
     }
 }

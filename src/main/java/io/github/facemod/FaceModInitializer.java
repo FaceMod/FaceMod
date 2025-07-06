@@ -46,6 +46,7 @@ public class FaceModInitializer implements ClientModInitializer {
 
                 if(FaceConfig.General.onFaceLand){
                     //TODO: Cache all skill levels and current exp. start with calling /skills to open the gui
+                    sendCommand("skills");
                 }
             }
         }));

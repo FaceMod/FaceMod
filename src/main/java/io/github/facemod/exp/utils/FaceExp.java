@@ -1,16 +1,16 @@
 package io.github.facemod.exp.utils;
 
-import org.spongepowered.asm.mixin.Unique;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class FaceExp {
     public static String lastCategory = "";
     public static double lastExpPerHour = 0;
     public static List<ExpGain> xpHistory = new ArrayList<>();
+    public static List<FaceSkill> skillCache = new ArrayList<>();
 
     public static boolean hasRecentExpGain(Duration within) {
         Instant now = Instant.now();

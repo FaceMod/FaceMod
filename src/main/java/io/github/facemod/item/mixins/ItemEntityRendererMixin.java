@@ -134,7 +134,7 @@ public class ItemEntityRendererMixin {
                 }
 
                 rarity = cleanedCategory.substring(0, cleanedCategory.indexOf("'")).trim().toLowerCase();
-                itemtype = cleanedCategory.substring(cleanedCategory.indexOf("'") + 1).trim().toLowerCase();
+                itemtype = cleanedCategory.substring(cleanedCategory.indexOf("'") + 1).replaceAll("'", "").trim().toLowerCase();
             }
 
             var gearType = getGearType(itemtype);
@@ -149,22 +149,19 @@ public class ItemEntityRendererMixin {
             }
 
             if(!skipItem) {
-                if (!isRaritySelected(gearType, rarity) && !isEmpty(gearType)) {
-                    //System.out.println("Rarity Disabled: " + rarity);
-                    return;
+                if (FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.enabled && !isGeneralRarity(rarity) && !isEmpty()) {
+                    if (!isRaritySelected(gearType, rarity) && !isEmpty(gearType)) {
+                        //System.out.println("Rarity Disabled: " + rarity);
+                        return;
+                    }
                 }
-                if (!isGeneralRarity(rarity) && !isEmpty() && FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.enabled) {
-                    return;
-                }
-            }
-
-            if (!matchesAllTags(gearType.filterTags, loreList) && !(gearType.filterTags.isEmpty())) { //TODO: Implement Conditionals, Implement Check for it ifs a main stat or not based off color.
-                //System.out.println("GearType Filter: " + gearType.filterTags); //TODO: Elements of same type should be combined, ex 50 Fire Damage MS and 10 Fire Damage SS should be considered 60 Fire Damage when doing conditionals.
-                return; //TODO: Implement check for total substats.
             }
 
             if (FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.enabled && !matchesAllTags(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.filterTags, loreList) && !(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.filterTags.isEmpty())) {
-                return;
+                if (!matchesAllTags(gearType.filterTags, loreList) && !(gearType.filterTags.isEmpty())) { //TODO: Implement Conditionals, Implement Check for it ifs a main stat or not based off color.
+                    //System.out.println("GearType Filter: " + gearType.filterTags); //TODO: Elements of same type should be combined, ex 50 Fire Damage MS and 10 Fire Damage SS should be considered 60 Fire Damage when doing conditionals.
+                    return; //TODO: Implement check for total substats.
+                }
             }
 
             if (FaceModInitializer.INSTANCE.CLIENT.player == null) {

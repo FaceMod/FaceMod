@@ -29,9 +29,11 @@ public class ClientPlayNetworkHandlerMixin {
 
         Pattern normalPattern = Pattern.compile("Gained (\\w+) XP! \\(\\+(\\d+)XP\\)");
         Pattern combatPattern = Pattern.compile("\\+(\\d{1,3}(,\\d{3})*)XP");
+        Pattern levelPattern = Pattern.compile(""); //TODO: Identify level up text and create regex.
 
         Matcher normalMatcher = normalPattern.matcher(txt);
         Matcher combatMatcher = combatPattern.matcher(txt);
+        Matcher levelMatcher = levelPattern.matcher(txt);
         int amount = 0;
         String category = "";
 
@@ -52,6 +54,9 @@ public class ClientPlayNetworkHandlerMixin {
             double currentRate = getExpPerHour(category, xpHistory);
             FaceExp.lastCategory = category;
             FaceExp.lastExpPerHour = currentRate;
+        } else if (levelMatcher.find()) {
+            //TODO: Identify Category here, adjust skillCache level, set currentExp to 0.
+            return;
         }
 
         for (FaceSkill skill : FaceExp.skillCache) {
@@ -62,7 +67,7 @@ public class ClientPlayNetworkHandlerMixin {
         }
     }
 
-    @Inject(method = "onExperienceBarUpdate", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "onExperienceBarUpdate", at = @At("HEAD"))
     private void onExperienceBarUpdate(ExperienceBarUpdateS2CPacket packet, CallbackInfo ci) {
         MinecraftClient client = MinecraftClient.getInstance();
 

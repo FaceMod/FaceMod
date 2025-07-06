@@ -65,9 +65,9 @@ public class ClientPlayNetworkHandlerMixin {
 
         for (FaceSkill skill : FaceExp.skillCache) {
             if (skill.category.equalsIgnoreCase(category)) {
-                System.out.println(skill.category + " : " + skill.currentExp + " + " + amount + " = ");
+                //System.out.println(skill.category + " : " + skill.currentExp + " + " + amount + " = ");
                 skill.currentExp += amount;
-                System.out.print(skill.currentExp + " / " + skill.maxExp + "\n");
+                //System.out.print(skill.currentExp + " / " + skill.maxExp + "\n");
                 break;
             }
         }

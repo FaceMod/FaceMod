@@ -55,6 +55,7 @@ public class InGameHudMixin {
         context.drawText(client.textRenderer, recentText, textX, textY + lineHeight * 2, 0xFFFFFFFF, true);
     }
 
+
     @Unique
     private static @NotNull String getTtlText() {
         FaceSkill skillData = null;

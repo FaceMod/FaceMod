@@ -3,7 +3,9 @@ package io.github.facemod.exp.mixins;
 import io.github.facemod.exp.utils.ExpGain;
 import io.github.facemod.exp.utils.FaceExp;
 import io.github.facemod.exp.utils.FaceSkill;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.packet.s2c.play.ExperienceBarUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,6 +17,7 @@ import java.util.regex.Pattern;
 
 import static io.github.facemod.exp.utils.ExpGain.getExpPerHour;
 import static io.github.facemod.exp.utils.ExpGain.trimOldEntries;
+import static io.github.facemod.exp.utils.FaceExp.getCombatLevelExp;
 import static io.github.facemod.exp.utils.FaceExp.xpHistory;
 
 @Mixin(ClientPlayNetworkHandler.class)
@@ -56,6 +59,24 @@ public class ClientPlayNetworkHandlerMixin {
                 skill.currentExp += amount;
                 break;
             }
+        }
+    }
+
+    @Inject(method = "onExperienceBarUpdate", at = @At("HEAD"), cancellable = true)
+    private void onExperienceBarUpdate(ExperienceBarUpdateS2CPacket packet, CallbackInfo ci) {
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        if (client.player != null) {
+            int combatLevel = packet.getExperienceLevel();
+            float progress = packet.getBarProgress();
+
+            double requiredExp = getCombatLevelExp(combatLevel);
+
+            double currentExpProgress = requiredExp * progress;
+
+            FaceSkill combat = new FaceSkill("Combat", combatLevel, (int) currentExpProgress, (int) requiredExp);
+
+            FaceExp.skillCache.add(combat);
         }
     }
 }

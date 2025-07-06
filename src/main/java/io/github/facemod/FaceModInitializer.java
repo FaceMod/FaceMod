@@ -62,6 +62,7 @@ public class FaceModInitializer implements ClientModInitializer {
 
             handleKeyBinds();
         });
+
     }
 
     public void sendCommand(String command) {

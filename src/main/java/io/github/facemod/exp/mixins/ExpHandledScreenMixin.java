@@ -20,13 +20,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.github.facemod.exp.utils.FaceExp.hasCachedSkills;
 import static io.github.facemod.exp.utils.FaceExp.skillCache;
 
 @Mixin(HandledScreen.class)
 public abstract class ExpHandledScreenMixin {
-    @Unique
-    private boolean init = true;
-
     @Inject(method = "init", at = @At("TAIL"))
     private void onInit(CallbackInfo info) {
 
@@ -34,8 +32,7 @@ public abstract class ExpHandledScreenMixin {
         Text screenTitle = handledScreen.getTitle();
 
         if (FaceConfig.General.onFaceLand) {
-            if (init && screenTitle.getString().contains("朮")) {
-                init = false;
+            if (!hasCachedSkills && screenTitle.getString().contains("朮")) {
                 new Thread(() -> {
                     try {
                         Thread.sleep(1000);
@@ -86,7 +83,8 @@ public abstract class ExpHandledScreenMixin {
             skillCache.add(new FaceSkill(skill, level, xp, max));
         }
 
-        init = false;
+        MinecraftClient.getInstance().player.sendMessage(Text.of("[FaceMod]: Skills loaded."),false);
+        hasCachedSkills = true;
         MinecraftClient.getInstance().player.closeHandledScreen();
     }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class FaceExp {
+    public static boolean hasCachedSkills = false;
     public static String lastCategory = "";
     public static double lastExpPerHour = 0;
     public static List<ExpGain> xpHistory = new ArrayList<>();

@@ -1,5 +1,6 @@
 package io.github.facemod;
 
+import io.github.facemod.exp.utils.FaceExp;
 import io.github.facemod.item.util.Unicode;
 import io.github.facemod.keybinds.util.BindHandler;
 import io.github.facemod.keybinds.util.FaceBinds;
@@ -44,6 +45,7 @@ public class FaceModInitializer implements ClientModInitializer {
             if (connection != null && connection.getAddress() != null) {
                 String serverAddress = connection.getAddress().toString().toLowerCase();
                 FaceConfig.General.onFaceLand = serverAddress.startsWith("local") || serverAddress.contains("face.land");
+                FaceExp.hasCachedSkills = false;
 
                 if(FaceConfig.General.onFaceLand){
                     sendCommand("skills");

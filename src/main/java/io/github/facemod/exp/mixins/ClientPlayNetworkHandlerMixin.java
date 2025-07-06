@@ -32,8 +32,6 @@ public class ClientPlayNetworkHandlerMixin {
         int amount = 0;
         String category = "";
 
-        if (!normalMatcher.find() && !combatMatcher.find()) return;
-
         if (normalMatcher.find()) {
             category = normalMatcher.group(1);
             amount = Integer.parseInt(normalMatcher.group(2));

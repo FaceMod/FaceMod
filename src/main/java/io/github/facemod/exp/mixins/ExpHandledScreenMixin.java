@@ -60,7 +60,6 @@ public abstract class ExpHandledScreenMixin {
             );
 
             String name = displayName.getString(); // "<Category> Skill [<Current>/99]"
-            System.out.println(displayName.getString());
             Matcher nameMatch = Pattern.compile("^(\\w+) (?:\\w+ )?\\[(\\d+)/\\d+]").matcher(name);
             if (!nameMatch.find()) continue;
 

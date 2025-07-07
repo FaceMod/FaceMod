@@ -159,6 +159,10 @@ public class ItemEntityRendererMixin {
                         return;
                     }
                 }
+            } else {
+                if (!gearType.enabled) {
+                    return;
+                }
             }
 
             if (FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.enabled && !matchesAllTags(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.filterTags, loreList) && !(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.filterTags.isEmpty())) {

@@ -51,6 +51,10 @@ public class FaceConfig implements ConfigData {
 
         @ConfigEntry.Gui.NoTooltip
         public static boolean expCalculator = true;
+
+        @ConfigEntry.Gui.NoTooltip
+        public static boolean autoSell = true;
+
     }
 
     @ConfigEntry.Category("inventory")

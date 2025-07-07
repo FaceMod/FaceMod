@@ -3,7 +3,6 @@
   "package": "io.github.facemod.bits.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "BitsHandledScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

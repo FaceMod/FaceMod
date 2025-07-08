@@ -1,5 +1,6 @@
 package io.github.facemod;
 
+import io.github.facemod.bits.utils.KelpAutoSeller;
 import io.github.facemod.exp.utils.FaceExp;
 import io.github.facemod.item.util.Unicode;
 import io.github.facemod.keybinds.util.BindHandler;
@@ -11,7 +12,6 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.ClientConnection;
@@ -65,6 +65,7 @@ public class FaceModInitializer implements ClientModInitializer {
             handleKeyBinds();
         });
 
+        KelpAutoSeller.init();
     }
 
     public void sendCommand(String command) {

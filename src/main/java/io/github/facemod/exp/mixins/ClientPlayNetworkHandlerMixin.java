@@ -33,7 +33,7 @@ public class ClientPlayNetworkHandlerMixin {
 
         Pattern normalPattern = Pattern.compile("Gained (\\w+) XP! \\(\\+(\\d+)XP\\)");
         Pattern combatPattern = Pattern.compile("\\+(\\d{1,3}(,\\d{3})*)XP");
-        Pattern levelPattern = Pattern.compile(""); //TODO: Identify level up text and create regex.
+        Pattern levelPattern = Pattern.compile("Skill Up! Your skill level in (\\w+) has increased to (\\d+)!");
 
         Matcher normalMatcher = normalPattern.matcher(txt);
         Matcher combatMatcher = combatPattern.matcher(txt);
@@ -59,7 +59,18 @@ public class ClientPlayNetworkHandlerMixin {
             FaceExp.lastCategory = category;
             FaceExp.lastExpPerHour = currentRate;
         } else if (levelMatcher.find()) {
-            //TODO: Identify Category here, adjust skillCache level, set currentExp to 0. for leveling up
+            category = levelMatcher.group(1);
+            int newLevel = Integer.parseInt(levelMatcher.group(2));
+
+            for (FaceSkill skill : FaceExp.skillCache) {
+                if (skill.category.equalsIgnoreCase(category)) {
+                    skill.currentLevel = newLevel;
+                    skill.currentExp = 0;
+                    break;
+                }
+            }
+
+
             return;
         }
 

@@ -17,8 +17,7 @@ import java.util.regex.Pattern;
 
 import static io.github.facemod.exp.utils.ExpGain.getExpPerHour;
 import static io.github.facemod.exp.utils.ExpGain.trimOldEntries;
-import static io.github.facemod.exp.utils.FaceExp.getCombatLevelExp;
-import static io.github.facemod.exp.utils.FaceExp.xpHistory;
+import static io.github.facemod.exp.utils.FaceExp.*;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
@@ -66,6 +65,11 @@ public class ClientPlayNetworkHandlerMixin {
                 if (skill.category.equalsIgnoreCase(category)) {
                     skill.currentLevel = newLevel;
                     skill.currentExp = 0;
+                    if(category.equals("Combat")){
+                        skill.maxExp = (int) getCombatLevelExp(newLevel);
+                    } else {
+                        skill.maxExp = (int) getProfessionExp(newLevel); //TODO: Determine whether its a combat profession or not because it will have a +-10 difference.
+                    }
                     break;
                 }
             }

@@ -144,34 +144,23 @@ public class ItemEntityRendererMixin {
                 return;
             }
 
-            if (!FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.enabled && !gearType.enabled) {
-                //                    System.out.println("GearType Disabled: " + false);
-                return;
-            }
-
-            if(!skipItem) {
-                if (FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.enabled && !isGeneralRarity(rarity) && !isEmpty()) {
+            boolean passesGeneralRarity = isGeneralRarity(rarity) || isEmpty();
+            boolean passesGeneralTags = matchesAllTags(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.filterTags, loreList) || FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.filterTags.isEmpty();
+            boolean isEligibleByGeneral = !skipItem && passesGeneralRarity && passesGeneralTags;
+            if (!FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.enabled || !isEligibleByGeneral) {
+                if (!gearType.enabled) {
+//                    System.out.println("GearType Disabled: " + false);
+                    return;
+                }
+                if (!skipItem) {
                     if (!isRaritySelected(gearType, rarity) && !isEmpty(gearType)) {
                         //System.out.println("Rarity Disabled: " + rarity);
                         return;
                     }
-                    if (!gearType.enabled) {
-                        return;
-                    }
                 }
-            } else {
-                if (!gearType.enabled) {
-                    return;
-                }
-            }
-
-            if (FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.enabled && !matchesAllTags(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.filterTags, loreList) && !(FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.filterTags.isEmpty())) {
                 if (!matchesAllTags(gearType.filterTags, loreList) && !(gearType.filterTags.isEmpty())) { //TODO: Implement Conditionals, Implement Check for it ifs a main stat or not based off color.
                     //System.out.println("GearType Filter: " + gearType.filterTags); //TODO: Elements of same type should be combined, ex 50 Fire Damage MS and 10 Fire Damage SS should be considered 60 Fire Damage when doing conditionals.
                     return; //TODO: Implement check for total substats.
-                }
-                if (!gearType.enabled) {
-                    return;
                 }
             }
 
@@ -184,13 +173,17 @@ public class ItemEntityRendererMixin {
 
             if (!seenItems.contains(name)) {
                 //System.out.println("ItemEntityRenderer itemKey: " + itemStack);
+                String filterTagsString = gearType.filterTags.toString();
+                if (isEligibleByGeneral) {
+                    filterTagsString = FaceModInitializer.INSTANCE.CONFIG.inventory.dropHighlight.general.filterTags.toString();
+                }
                 FaceModInitializer.INSTANCE.CLIENT.player.sendMessage(
                         Text.literal("財 ")
                                 .append(Text.literal(capitalizeWords(rarity) + " " + capitalizeWords(itemtype))
                                         .styled(style -> style.withColor(getColor(rarity))))
                                 .append(Text.literal(" with ")
                                         .styled(style -> style.withColor(Formatting.GRAY)))
-                                .append(Text.literal(gearType.filterTags.toString())
+                                .append(Text.literal(filterTagsString)
                                         .styled(style -> style.withColor(Formatting.GREEN)))
                                 .append(Text.literal(" dropped \n→ ")
                                         .styled(style -> style.withColor(Formatting.GRAY)))

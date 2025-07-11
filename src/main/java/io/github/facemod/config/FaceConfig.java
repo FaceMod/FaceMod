@@ -105,6 +105,8 @@ public class FaceConfig implements ConfigData {
             @ConfigEntry.Gui.CollapsibleObject
             public GearType pistol = new GearType();
             @ConfigEntry.Gui.CollapsibleObject
+            public GearType musket = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
             public GearType warhammer = new GearType();
             @ConfigEntry.Gui.CollapsibleObject
             public GearType longbow = new GearType();
@@ -118,6 +120,8 @@ public class FaceConfig implements ConfigData {
             public GearType mace = new GearType();
             @ConfigEntry.Gui.CollapsibleObject
             public GearType hoe = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType woodaxe = new GearType();
             @ConfigEntry.Gui.CollapsibleObject
             public GearType pickaxe = new GearType();
             @ConfigEntry.Gui.CollapsibleObject
@@ -178,6 +182,7 @@ public class FaceConfig implements ConfigData {
                 if (staff.enabled) selectedGear.add("staff");
                 if (wand.enabled) selectedGear.add("wand");
                 if (pistol.enabled) selectedGear.add("pistol");
+                if (musket.enabled) selectedGear.add("musket");
                 if (warhammer.enabled) selectedGear.add("warhammer");
                 if (longbow.enabled) selectedGear.add("longbow");
                 if (shortbow.enabled) selectedGear.add("shortbow");
@@ -185,6 +190,7 @@ public class FaceConfig implements ConfigData {
                 if (dagger.enabled) selectedGear.add("dagger");
                 if (mace.enabled) selectedGear.add("mace");
                 if (hoe.enabled) selectedGear.add("hoe");
+                if (woodaxe.enabled) selectedGear.add("woodaxe");
                 if (pickaxe.enabled) selectedGear.add("pickaxe");
                 if (rod.enabled) selectedGear.add("rod");
                 if (spellbook.enabled) selectedGear.add("spellbook");

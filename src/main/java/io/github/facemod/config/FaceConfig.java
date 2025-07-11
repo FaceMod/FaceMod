@@ -129,6 +129,12 @@ public class FaceConfig implements ConfigData {
             @ConfigEntry.Gui.CollapsibleObject
             public GearType ammunition = new GearType();
             @ConfigEntry.Gui.CollapsibleObject
+            public GearType greatshield = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType buckler = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
+            public GearType kiteshield = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
             public GearType ring = new GearType();
             @ConfigEntry.Gui.CollapsibleObject
             public GearType earring = new GearType();
@@ -184,6 +190,9 @@ public class FaceConfig implements ConfigData {
                 if (spellbook.enabled) selectedGear.add("spellbook");
                 if (quiver.enabled) selectedGear.add("quiver");
                 if (ammunition.enabled) selectedGear.add("ammunition");
+                if (greatshield.enabled) selectedGear.add("greatshield");
+                if (buckler.enabled) selectedGear.add("buckler");
+                if (kiteshield.enabled) selectedGear.add("kiteshield");
                 if (ring.enabled) selectedGear.add("ring");
                 if (earring.enabled) selectedGear.add("earring");
                 if (necklace.enabled) selectedGear.add("necklace");

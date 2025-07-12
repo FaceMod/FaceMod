@@ -27,6 +27,15 @@ public class FaceExp {
                 .sum();
     }
 
+    public static int getRecentExpCount(String category, Duration within) {
+        Instant now = Instant.now();
+        return (int) xpHistory.stream()
+                .filter(g -> g.category.equalsIgnoreCase(category))
+                .filter(g -> Duration.between(g.time, now).compareTo(within) <= 0)
+                .count();
+    }
+
+
     public static double getCombatLevelExp(int level){
         return 75 + (level * 50) + (Math.pow(level,3.6) * (0.5 + (level*0.005))) + Math.pow(10000,((double) level /30 - 1));
     }
@@ -34,8 +43,8 @@ public class FaceExp {
     public static double getCombatSkillsExp(int level){
         return 30 + (level * 30) + Math.pow(level,2.75);
     }
-
     public static double getProfessionExp(int level){
         return 20 + (level * 30) + Math.pow(level,2.71);
     }
+
 }

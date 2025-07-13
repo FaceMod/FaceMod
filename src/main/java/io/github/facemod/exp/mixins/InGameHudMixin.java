@@ -43,10 +43,8 @@ public class InGameHudMixin {
         String recentText = String.format("+%d EXP (last 60s)", FaceExp.getRecentExpGain(FaceExp.lastCategory, Duration.ofSeconds(60)));
 
         int count = FaceExp.getRecentExpCount(FaceExp.lastCategory, Duration.ofHours(1));
-        int totalExp = FaceExp.getRecentExpGain(FaceExp.lastCategory, Duration.ofHours(1));
-        int avgExp = count > 0 ? totalExp / count : 0;
 
-        String hourText = String.format("+%d EVENTS (%d EXP, avg %d EXP/event)", count, totalExp, avgExp);
+        String hourText = String.format("+%d (last 60m))", count);
 
         int lineHeight = client.textRenderer.fontHeight + 2;
         int lineCount = 3;

@@ -187,13 +187,14 @@ public class ItemEntityRendererMixin {
                                         .styled(style -> style.withColor(Formatting.GREEN)))
                                 .append(Text.literal(" dropped \n→ ")
                                         .styled(style -> style.withColor(Formatting.GRAY)))
-                                .append(Text.literal("[")
-                                        .append(Text.literal(itemStack.getName().getString())
-                                                .styled(style -> style
-                                                        .withColor(getColor(rarity))
-                                                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM,
-                                                                new HoverEvent.ItemStackContent(itemStack)))))
-                                        .append(Text.literal("]"))),
+                                .append(
+                                        Text.literal("[")
+                                                .append(Text.literal(itemStack.getName().getString())
+                                                        .styled(style -> style
+                                                                .withColor(getColor(rarity))
+                                                                .withHoverEvent(new HoverEvent.ShowItem(itemStack))))
+                                                .append(Text.literal("]"))
+                                ),
                         false
                 );
                 seenItems.add(name);
@@ -206,7 +207,7 @@ public class ItemEntityRendererMixin {
             }
 
             for (int i = 0; i < 20; i++) {
-                world.addParticle(ParticleTypes.END_ROD,
+                world.addParticleClient(ParticleTypes.END_ROD,
                         itemPos.x,
                         itemPos.y + 2 + i * 0.5,
                         itemPos.z,

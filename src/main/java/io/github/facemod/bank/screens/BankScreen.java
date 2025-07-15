@@ -2,14 +2,13 @@ package io.github.facemod.bank.screens;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet;
@@ -17,8 +16,12 @@ import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.sync.ComponentChangesHash;
+import net.minecraft.screen.sync.ItemStackHash;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.joml.Matrix3x2f;
+import org.joml.Matrix3x2fStack;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -181,11 +184,11 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
         // Top + Grid
         context.drawTexture(
-                id -> RenderLayer.getGuiTextured(INVENTORY_BACKGROUND),
+                RenderPipelines.GUI_TEXTURED, // <- This is the key addition
                 INVENTORY_BACKGROUND,
                 startX - 7 + (offsetX * 10),
                 startY - 7 + (offsetY * 10),
-                0, 12, 256, 97,
+                0f, 12f, 256, 97,
                 256, 256
         );
 
@@ -217,20 +220,20 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                         }
                     }
                 } else {
-                    MatrixStack stack = context.getMatrices();
-                    stack.push();
+                    Matrix3x2fStack stack = context.getMatrices();
+                    stack.pushMatrix();
 
                     int qmX = startX + 9 * SLOT_SIZE + (offsetX * 10) + SLOT_SIZE / 2;
                     int qmY = startY + 2 * SLOT_SIZE + (offsetY * 10) + SLOT_SIZE / 2;
 
                     float scale = 5.0f;
-                    stack.scale(scale, scale, 1.0f);
+                    stack.mul(new Matrix3x2f().scale(scale, scale));
 
-                    stack.translate((qmX / scale) - 20.5, (qmY / scale)-4, 256);
+                    stack.mul(new Matrix3x2f().translate((qmX / scale) - 20.5f, (qmY / scale) - 4f));
 
                     context.drawText(textRenderer, "?", 0, 0, 0xFF000000, false);
 
-                    stack.pop();
+                    stack.popMatrix();
                     if (mouseX >= qmX - (50 * scale - 25) && mouseX <= qmX + (50 * scale - 100)/4 && mouseY >= qmY - (50 * scale - 100)/3 && mouseY <= qmY + (50 * scale - 100)/3) {
                         context.drawTooltip(textRenderer, Text.literal("Choose §6Personal §fVault or §aGuild §fVault"), mouseX, mouseY);
                     }
@@ -249,7 +252,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
         Identifier INVENTORY_BACKGROUND = Identifier.of("minecraft", "textures/gui/container/inventory.png");
         context.drawTexture(
-                id -> RenderLayer.getGuiTextured(INVENTORY_BACKGROUND), // Render Layer
+                RenderPipelines.GUI_TEXTURED,
                 INVENTORY_BACKGROUND, // Texture
                 startX - 7,
                 startY - 3,
@@ -423,62 +426,64 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
         }
 
         ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
+        ComponentChangesHash.ComponentHasher hasher = networkHandler.getComponentHasher();
 
-        Int2ObjectArrayMap<ItemStack> modifiedStacks = new Int2ObjectArrayMap<>();
-
+        Int2ObjectArrayMap<ItemStackHash> modifiedStacks = new Int2ObjectArrayMap<>();
         for (int i = 0; i < handler.slots.size(); i++) {
-            modifiedStacks.put(i, handler.slots.get(i).getStack());
+            modifiedStacks.put(i, ItemStackHash.fromItemStack(handler.slots.get(i).getStack(), hasher));
         }
+
+        ItemStackHash carriedItemHash = ItemStackHash.fromItemStack(handler.getCursorStack(), hasher);
 
         Packet<?> packet = new ClickSlotC2SPacket(
                 syncId,
                 0,
-                fromSlot,
-                0,
+                (short) fromSlot,
+                (byte) 0,
                 SlotActionType.PICKUP,
-                handler.slots.get(fromSlot).getStack(),
-                modifiedStacks
+                modifiedStacks,
+                carriedItemHash
         );
         networkHandler.sendPacket(packet);
 
         packet = new ClickSlotC2SPacket(
                 syncId,
                 0,
-                toSlot,
-                0,
+                (short) toSlot,
+                (byte) 0,
                 SlotActionType.PICKUP,
-                handler.slots.get(toSlot).getStack(),
-                modifiedStacks
+                modifiedStacks,
+                carriedItemHash
         );
         networkHandler.sendPacket(packet);
     }
-
-
-
 
     private void sendClickSlotPacket(int slotIndex) {
         if (client == null || client.getNetworkHandler() == null) {
             return;
         }
 
-        ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
+        ComponentChangesHash.ComponentHasher hasher = client.getNetworkHandler().getComponentHasher();
 
-        Int2ObjectArrayMap<ItemStack> modifiedStacks = new Int2ObjectArrayMap<>();
+        Int2ObjectArrayMap<ItemStackHash> modifiedStacks = new Int2ObjectArrayMap<>();
 
         for (int i = 0; i < handler.slots.size(); i++) {
-            modifiedStacks.put(i, handler.slots.get(i).getStack());
+            modifiedStacks.put(i, ItemStackHash.fromItemStack(handler.slots.get(i).getStack(), hasher));
         }
 
+        ItemStackHash carriedItemHash = ItemStackHash.fromItemStack(handler.getCursorStack(), hasher);
+
         Packet<?> packet = new ClickSlotC2SPacket(
-                syncId,                // Synchronization ID
-                0,                    // Revision value
-                slotIndex,           // The index of the slot being interacted with
-                0,                  // Button value (0 = LEFT_MOUSE, 1 = RIGHT_MOUSE)
-                SlotActionType.PICKUP,        // Action type
-                handler.slots.get(slotIndex).getStack(), // Item stack being interacted with
-                modifiedStacks         // Map of all stacks on page.
+                syncId,                        // syncId
+                0,                            // revision
+                (short) slotIndex,            // slot index as short
+                (byte) 0,                     // button (left-click)
+                SlotActionType.PICKUP,        // action type
+                modifiedStacks,               // map of modified stacks
+                carriedItemHash               // carried item hash
         );
-        networkHandler.sendPacket(packet);
+
+        client.getNetworkHandler().sendPacket(packet);
     }
 
     private synchronized void enqueueTask(Runnable task) {

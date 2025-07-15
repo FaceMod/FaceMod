@@ -44,10 +44,10 @@ public class InGameHudMixin {
 
         int count = FaceExp.getRecentExpCount(FaceExp.lastCategory, Duration.ofHours(1));
 
-        String hourText = String.format("+%d (last 60m))", count);
+        String hourText = String.format("+%d (last 60m)", count);
 
         int lineHeight = client.textRenderer.fontHeight + 2;
-        int lineCount = 3;
+        int lineCount = 4;
 
         int boxWidth = 140;
         int boxHeight = (lineHeight * lineCount) + 4;

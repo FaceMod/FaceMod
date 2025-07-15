@@ -50,7 +50,7 @@ public class BindHandler {
             return;
         }
         PlayerInventory inventory = INSTANCE.CLIENT.player.getInventory();
-        int previousSlot = inventory.selectedSlot;
+        int previousSlot = inventory.getSelectedSlot();
         int potionSlot = findLifePotion(inventory);
 
         if (potionSlot == -1){
@@ -60,7 +60,7 @@ public class BindHandler {
 
         if (potionSlot < 0 || potionSlot > 8) return;
 
-        INSTANCE.CLIENT.player.getInventory().selectedSlot = potionSlot;
+        INSTANCE.CLIENT.player.getInventory().setSelectedSlot(potionSlot);
         Objects.requireNonNull(INSTANCE.CLIENT.getNetworkHandler()).sendPacket(new UpdateSelectedSlotC2SPacket(potionSlot));
 
         Hand hand = Hand.MAIN_HAND;
@@ -74,7 +74,7 @@ public class BindHandler {
 
             // Swap back to previous item
             INSTANCE.CLIENT.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(previousSlot));
-            inventory.selectedSlot = previousSlot;
+            inventory.setSelectedSlot(previousSlot);
         });    }
 
     public static void POTION_ENERGY() {
@@ -82,7 +82,7 @@ public class BindHandler {
             return;
         }
         PlayerInventory inventory = INSTANCE.CLIENT.player.getInventory();
-        int previousSlot = inventory.selectedSlot;
+        int previousSlot = inventory.getSelectedSlot();
         int potionSlot = findEnergyPotion(inventory);
 
         if (potionSlot == -1) {
@@ -92,7 +92,7 @@ public class BindHandler {
 
         if (potionSlot < 0 || potionSlot > 8) return;
 
-        INSTANCE.CLIENT.player.getInventory().selectedSlot = potionSlot;
+        INSTANCE.CLIENT.player.getInventory().setSelectedSlot(potionSlot);
         Objects.requireNonNull(INSTANCE.CLIENT.getNetworkHandler()).sendPacket(new UpdateSelectedSlotC2SPacket(potionSlot));
 
         Hand hand = Hand.MAIN_HAND; // Assuming potion is in main hand
@@ -106,7 +106,7 @@ public class BindHandler {
 
             // Swap back to previous item
             INSTANCE.CLIENT.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(previousSlot));
-            inventory.selectedSlot = previousSlot;
+            inventory.setSelectedSlot(previousSlot);
         });
     }
 

@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.time.Duration;
+import java.util.Objects;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
@@ -28,10 +29,9 @@ public class InGameHudMixin {
 
         if (!FaceExp.hasRecentExpGain(Duration.ofSeconds(30))) return;
 
-        int screenWidth = client.getWindow().getScaledWidth();
         int padding = 5;
 
-        String expText = "";
+        String expText;
         if(FaceExp.lastExpPerHour != 0) {
             expText = String.format("%s EXP/hr: %.0f", FaceExp.lastCategory, FaceExp.lastExpPerHour);
         } else {
@@ -45,25 +45,36 @@ public class InGameHudMixin {
         int count = FaceExp.getRecentExpCount(FaceExp.lastCategory, Duration.ofHours(1));
 
         String hourText = String.format("+%d (last 60m)", count);
+        FaceSkill sk = null;
+
+        for(FaceSkill skill : FaceExp.skillCache){
+            if(Objects.equals(skill.category, FaceExp.lastCategory)){
+                sk = skill;
+                break;
+            }
+        }
+
+        String progressText = "N/A / N/A";
+        if(sk != null) {
+            progressText = String.format("%d/%d", sk.currentExp, sk.maxExp);
+        }
 
         int lineHeight = client.textRenderer.fontHeight + 2;
-        int lineCount = 4;
+        int lineCount = 5;
 
         int boxWidth = 140;
         int boxHeight = (lineHeight * lineCount) + 4;
 
-        int x = padding;
-        int y = padding;
+        context.fill(padding, padding, padding + boxWidth, padding + boxHeight, 0x1ACCCCCC);
 
-        context.fill(x, y, x + boxWidth, y + boxHeight, 0x1ACCCCCC);
-
-        int textX = x + 5;
-        int textY = y + 4;
+        int textX = padding + 5;
+        int textY = padding + 4;
 
         context.drawText(client.textRenderer, expText, textX, textY, 0xFFFFFFFF, true);
         context.drawText(client.textRenderer, ttlText, textX, textY + lineHeight, 0xFFFFFFFF, true);
         context.drawText(client.textRenderer, hourText, textX, textY + lineHeight * 2, 0xFFFFFFFF, true);
         context.drawText(client.textRenderer, recentText, textX, textY + lineHeight * 3, 0xFFFFFFFF, true);
+        context.drawText(client.textRenderer, progressText, textX, textY + lineHeight * 3, 0xFFFFFFFF, true);
     }
 
 

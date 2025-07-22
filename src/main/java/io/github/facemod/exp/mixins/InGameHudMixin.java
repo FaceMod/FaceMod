@@ -74,7 +74,7 @@ public class InGameHudMixin {
         context.drawText(client.textRenderer, ttlText, textX, textY + lineHeight, 0xFFFFFFFF, true);
         context.drawText(client.textRenderer, hourText, textX, textY + lineHeight * 2, 0xFFFFFFFF, true);
         context.drawText(client.textRenderer, recentText, textX, textY + lineHeight * 3, 0xFFFFFFFF, true);
-        context.drawText(client.textRenderer, progressText, textX, textY + lineHeight * 3, 0xFFFFFFFF, true);
+        context.drawText(client.textRenderer, progressText, textX, textY + lineHeight * 4, 0xFFFFFFFF, true);
     }
 
 

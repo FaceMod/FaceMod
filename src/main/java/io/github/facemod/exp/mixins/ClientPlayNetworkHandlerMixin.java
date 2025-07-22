@@ -5,6 +5,8 @@ import io.github.facemod.exp.utils.FaceExp;
 import io.github.facemod.exp.utils.FaceSkill;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.entity.Entity;
+import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
 import net.minecraft.network.packet.s2c.play.ExperienceBarUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,7 +68,7 @@ public class ClientPlayNetworkHandlerMixin {
                 if (skill.category.equalsIgnoreCase(category)) {
                     skill.currentLevel = newLevel;
                     skill.currentExp = 0;
-                    if(category.equals("Combat")){
+                    if (category.equals("Combat")) {
                         skill.maxExp = (int) getCombatLevelExp(newLevel);
                     } else {
                         skill.maxExp = (int) getProfessionExp(newLevel); //TODO: Determine whether its a combat profession or not because it will have a +-10 difference.
@@ -103,6 +106,29 @@ public class ClientPlayNetworkHandlerMixin {
             FaceSkill combat = new FaceSkill("Combat", combatLevel, (int) currentExpProgress, (int) requiredExp);
 
             FaceExp.skillCache.add(combat);
+        }
+    }
+
+    @Inject(method = "onEntityStatus", at = @At("HEAD"))
+    private void onTotemPop(EntityStatusS2CPacket packet, CallbackInfo ci) {
+        if (packet.getStatus() == 35) {
+            Entity entity = packet.getEntity(MinecraftClient.getInstance().world);
+            if (entity != null && entity == MinecraftClient.getInstance().player) {
+
+                FaceSkill sk = null;
+
+                for(FaceSkill skill : FaceExp.skillCache){
+                    if(Objects.equals(skill.category, "Combat")){
+                        sk = skill;
+                        break;
+                    }
+                }
+
+
+                sk.currentLevel+=1;
+                sk.maxExp = (int) getCombatLevelExp(sk.currentLevel);
+                sk.currentExp = (int) (sk.maxExp * MinecraftClient.getInstance().player.experienceProgress);
+            }
         }
     }
 }

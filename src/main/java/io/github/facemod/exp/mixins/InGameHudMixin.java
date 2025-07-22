@@ -56,7 +56,8 @@ public class InGameHudMixin {
 
         String progressText = "N/A / N/A";
         if(sk != null) {
-            progressText = String.format("%d/%d", sk.currentExp, sk.maxExp);
+            progressText = String.format("%d/%d (%.0f%%)", sk.currentExp, sk.maxExp,
+                    (sk.currentExp * 100.0) / sk.maxExp);
         }
 
         int lineHeight = client.textRenderer.fontHeight + 2;

@@ -169,6 +169,8 @@ public class FaceConfig implements ConfigData {
             @ConfigEntry.Gui.CollapsibleObject
             public GearType greaves = new GearType();
             @ConfigEntry.Gui.CollapsibleObject
+            public GearType trinket = new GearType();
+            @ConfigEntry.Gui.CollapsibleObject
             public GearType socketgem = new GearType();
             @ConfigEntry.Gui.CollapsibleObject
             public GearType enchantmentbook = new GearType();
@@ -214,6 +216,7 @@ public class FaceConfig implements ConfigData {
                 if (boots.enabled) selectedGear.add("boots");
                 if (shoes.enabled) selectedGear.add("shoes");
                 if (greaves.enabled) selectedGear.add("greaves");
+                if (trinket.enabled) selectedGear.add("trinket");
                 if (socketgem.enabled) selectedGear.add("socketgem");
                 if (enchantmentbook.enabled) selectedGear.add("enchantmentbook");
                 if (potion.enabled) selectedGear.add("potion");

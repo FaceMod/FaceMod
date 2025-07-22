@@ -121,7 +121,7 @@ public class FaceConfig implements ConfigData {
             @ConfigEntry.Gui.CollapsibleObject
             public GearType hoe = new GearType();
             @ConfigEntry.Gui.CollapsibleObject
-            public GearType woodaxe = new GearType();
+            public GearType lumberaxe = new GearType();
             @ConfigEntry.Gui.CollapsibleObject
             public GearType pickaxe = new GearType();
             @ConfigEntry.Gui.CollapsibleObject
@@ -190,7 +190,7 @@ public class FaceConfig implements ConfigData {
                 if (dagger.enabled) selectedGear.add("dagger");
                 if (mace.enabled) selectedGear.add("mace");
                 if (hoe.enabled) selectedGear.add("hoe");
-                if (woodaxe.enabled) selectedGear.add("woodaxe");
+                if (lumberaxe.enabled) selectedGear.add("lumberaxe");
                 if (pickaxe.enabled) selectedGear.add("pickaxe");
                 if (rod.enabled) selectedGear.add("rod");
                 if (spellbook.enabled) selectedGear.add("spellbook");

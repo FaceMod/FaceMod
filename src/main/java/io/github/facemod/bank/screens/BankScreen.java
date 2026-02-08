@@ -9,6 +9,8 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet;
@@ -39,6 +41,9 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
     private static final int COLUMNS = 3;
     private static final int GRID_WIDTH = COLUMNS * (SLOT_SIZE * 9 + 5) - 5;
     private static final int GRID_HEIGHT = ROWS * (SLOT_SIZE * 5 + 5) - 5;
+
+    // Locked Vaults
+    private static final Set<Integer> lockedTabs = new HashSet<>();
 
     // Inventory Dimensions
     private static final int INVENTORY_ROWS = 4;
@@ -335,23 +340,45 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
     private void switchToTab(int tabIndex) {
         if (tabIndex >= 0 && tabIndex < MAX_TABS) {
+            if (lockedTabs.contains(tabIndex)) {
+                System.out.println("Skipping locked tab " + tabIndex);
+                return;
+            }
+
+            // Check if the tab slot itself indicates it's locked
+            if (tabIndex < handler.slots.size()) {
+                Slot tabSlot = handler.slots.get(tabIndex);
+                ItemStack tabItem = tabSlot.getStack();
+
+                if (!tabItem.isEmpty()) {
+                    Identifier model = tabItem.get(DataComponentTypes.ITEM_MODEL);
+                    if (LOCKED_VAULT_MODEL.equals(model)) {
+                        lockedTabs.add(tabIndex);
+                        System.out.println("Tab " + tabIndex + " is locked (detected from tab slot)");
+                        return;
+                    }
+                }
+            }
+
             assert MinecraftClient.getInstance().player != null;
             int ping = Objects.requireNonNull(Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).getPlayerListEntry(
                     MinecraftClient.getInstance().player.getUuid()
             )).getLatency();
+
             enqueueTask(() -> {
-                    sendClickSlotPacket(tabIndex);
+                sendClickSlotPacket(tabIndex);
 
-                    try {
-                        Thread.sleep(Math.max(100 + (ping), 120)); // <-- Recommended is 100, anything below has a small chance of skipping less than 50 and will skip pages -Spade
-                    } catch (InterruptedException e) {
-                        System.err.println("sleep failed");
-                    }
+                try {
+                    int delay = Math.max(150 + (ping * 2), 200);
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                    System.err.println("sleep failed");
+                }
 
-                    if (doTabSwitch) {
-                        collectItemsFromCurrentTab(tabIndex);
-                        doTabSwitch = false;
-                    }
+                if (doTabSwitch) {
+                    collectItemsFromCurrentTab(tabIndex);
+                    doTabSwitch = false;
+                }
             });
         }
     }
@@ -517,9 +544,17 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
             items.add(slot.getStack());
         }
 
-        allTabItems.put(tabIndex, items);
+        boolean hasItems = items.stream().anyMatch(stack -> !stack.isEmpty());
+        if (hasItems || tabIndex == 0) {
+            allTabItems.put(tabIndex, items);
+            lockedTabs.remove(tabIndex); // Ensure it's not marked as locked
+        } else {
+            System.err.println("Warning: Tab " + tabIndex + " appears empty, might have been skipped");
+        }
     }
 
+    private static final Identifier LOCKED_VAULT_MODEL =
+            Identifier.of("faceland", "icons/bank/vault_page_locked");
 
     @Override
     public void close() {
@@ -528,5 +563,6 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
         lastUpdateTime = 0;
         tooltipItemIndex = -1;
         allTabItems.clear();
+        lockedTabs.clear();
     }
 }

@@ -2,7 +2,6 @@ rootProject.name = "FaceMod"
 
 pluginManagement {
     repositories {
-        maven("https://junhyung.nexus/")
         maven { url = uri("https://maven.fabricmc.net/") }
         maven { url = uri("https://maven.shedaniel.me/") }
         maven { url = uri("https://api.modrinth.com/maven") }
@@ -16,7 +15,6 @@ pluginManagement {
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     repositories {
-        maven("https://junhyung.nexus/")
         maven { url = uri("https://maven.fabricmc.net/") }
         maven { url = uri("https://maven.shedaniel.me/") }
         maven { url = uri("https://api.modrinth.com/maven") }

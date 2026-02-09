@@ -7,10 +7,8 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet;
@@ -76,6 +74,10 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
     private static ScreenHandler handler = null;
     private boolean isProcessing = false;
 
+    // Pick Items
+    private static ItemStack cursorStack = ItemStack.EMPTY;
+    private static boolean isDraggingItem = false;
+    private static int cursorItemSourceTab = -1;
 
     public ClientPlayerInteractionManager interactionManager = null;
 
@@ -147,6 +149,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
     }
 
+
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         drawBackground(context, delta, mouseX, mouseY);
@@ -176,26 +179,33 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
         guildVaultButton.render(context, mouseX, mouseY, delta);
         personalVaultButton.render(context, mouseX, mouseY, delta);
+
+        if (!cursorStack.isEmpty() && isDraggingItem) {
+            context.drawItem(cursorStack, mouseX - 8, mouseY - 8);
+            context.drawStackOverlay(textRenderer, cursorStack, mouseX - 8, mouseY - 8);
+        }
     }
+
     private void drawChestGrid(DrawContext context, int startX, int startY, int mouseX, int mouseY, int offsetX, int offsetY) {
         int tabIndex = offsetX + (offsetY * 3);
         List<ItemStack> items = allTabItems.get(tabIndex);
 
         if(items == null){
             items = Collections.emptyList();
-        }
-
-        Identifier INVENTORY_BACKGROUND = Identifier.of("minecraft", "textures/gui/container/generic_54.png");
+        }Identifier INVENTORY_BACKGROUND = Identifier.of("minecraft", "textures/gui/container/generic_54.png");
 
         // Top + Grid
         context.drawTexture(
-                RenderPipelines.GUI_TEXTURED, // <- This is the key addition
+                RenderPipelines.GUI_TEXTURED,
                 INVENTORY_BACKGROUND,
                 startX - 7 + (offsetX * 10),
                 startY - 7 + (offsetY * 10),
                 0f, 12f, 256, 97,
                 256, 256
         );
+
+        // Check if this tab is locked
+        boolean isTabLocked = lockedTabs.contains(tabIndex);
 
         for (int row = 0; row < 5; row++) {
             for (int col = 0; col < 9; col++) {
@@ -209,9 +219,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                     if (index < items.size()) {
                         ItemStack stack = items.get(index);
                         context.drawItem(stack, x + 1, y + 1);
-                        //context.drawItemInSlot(textRenderer, stack, x + 1, y + 1); <-- Method removed replacement necessary
                         context.drawStackOverlay(textRenderer, stack, x + 1, y + 1);
-
 
                         if (isHovered(mouseX,mouseY,x+1,y+1)) {
                             context.fillGradient(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0x80FFFFFF, 0x80FFFFFF);
@@ -236,17 +244,32 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
                     stack.mul(new Matrix3x2f().translate((qmX / scale) - 20.5f, (qmY / scale) - 4f));
 
-                    context.drawText(textRenderer, "?", 0, 0, 0xFF000000, false);
+                    context.drawText(textRenderer, "?", 0, 0, 0xFFFFFFFF, false);
 
-                    stack.popMatrix();
-                    if (mouseX >= qmX - (50 * scale - 25) && mouseX <= qmX + (50 * scale - 100)/4 && mouseY >= qmY - (50 * scale - 100)/3 && mouseY <= qmY + (50 * scale - 100)/3) {
+                    stack.popMatrix();if (mouseX >= qmX - (50 * scale - 25) && mouseX <= qmX + (50 * scale - 100)/4 && mouseY >= qmY - (50 * scale - 100)/3 && mouseY <= qmY + (50 * scale - 100)/3) {
                         context.drawTooltip(textRenderer, Text.literal("Choose §6Personal §fVault or §aGuild §fVault"), mouseX, mouseY);
                     }
                 }
             }
         }
-    }
 
+        // Draw lock icon if tab is locked
+        if (isTabLocked) {
+            Matrix3x2fStack stack = context.getMatrices();
+            stack.pushMatrix();
+
+            int lockX = startX + 9 * SLOT_SIZE + (offsetX * 10) + SLOT_SIZE / 2;
+            int lockY = startY + 2 * SLOT_SIZE + (offsetY * 10) + SLOT_SIZE / 2;
+
+            float scale = 5.0f;
+            stack.mul(new Matrix3x2f().scale(scale, scale));
+            stack.mul(new Matrix3x2f().translate((lockX / scale) - 20.5f, (lockY / scale) - 4f));
+
+            context.drawText(textRenderer, "🔒", 0, 0, 0xFFFFFFFF, false);
+
+            stack.popMatrix();
+        }
+    }
     private void renderInventory(DrawContext context, int startX, int startY, int mouseX, int mouseY) {
         PlayerInventory inventory = null;
         if (this.client != null && this.client.player != null) {
@@ -385,77 +408,341 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        System.out.println("mouseClicked");
-        if (button == 0) {
+        // Check if clicking on a tab while holding an item
+        if (!cursorStack.isEmpty() && button == 0) {
+            int tabClicked = getTabAtPosition((int) mouseX, (int) mouseY);
+            if (tabClicked != -1) {
+                switchToTabWithItem(tabClicked);
+                return true;
+            }
+        }
+
+        // Handle slot clicks in the bank grid
+        if (button == 0 || button == 1) {
             int startX = (width - GRID_WIDTH) / 2;
             int startY = (height - GRID_HEIGHT) / 2;
+
             for (int row = 0; row < ROWS; row++) {
                 for (int col = 0; col < COLUMNS; col++) {
-                    int x = startX + col * SLOT_SIZE;
-                    int y = startY + row * SLOT_SIZE;
-                    if (isHovered((int) mouseX, (int) mouseY, x, y)) {
-                        handleSlotClick(row, col);
-                        return true;
+                    int gridX = startX + (col) * (SLOT_SIZE * 9 + 5) + 2;
+                    int gridY = (startY + (row) * (SLOT_SIZE * 5 + 5) + 2) - 100;
+
+                    for (int slotRow = 0; slotRow < 5; slotRow++) {
+                        for (int slotCol = 0; slotCol < 9; slotCol++) {
+                            int x = gridX + slotCol * SLOT_SIZE + (col * 10);
+                            int y = gridY + slotRow * SLOT_SIZE + (row * 10);
+
+                            if (isHovered((int) mouseX, (int) mouseY, x + 1, y + 1)) {
+                                int tabIndex = col + (row * 3);
+                                int slotIndex = slotCol + slotRow * 9;
+                                handleSlotClick(tabIndex, slotIndex, button == 1);
+                                return true;
+                            }
+                        }
                     }
                 }
             }
+            // Handle inventory clicks
+            int inventoryStartX = (width - INVENTORY_WIDTH) / 2 + 12;
+            int inventoryStartY = startY + GRID_HEIGHT + 5 - 75;
+
+            if (handleInventoryClick((int) mouseX, (int) mouseY, inventoryStartX, inventoryStartY, button == 1)) {
+                return true;
+            }
         }
+
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    private void handleSlotClick(int row, int col) {
-        int clickedSlotIndex = row * COLUMNS + col;
-        ItemStack clickedItem = getItemStackFromSlotIndex(clickedSlotIndex);
-        System.out.println(clickedItem);
+    private boolean handleInventoryClick(int mouseX, int mouseY, int startX, int startY, boolean isRightClick) {
+        if (client == null || client.player == null) {
+            return false;
+        }
 
-        if (pickedUpItem.isEmpty()) {
-            pickedUpItem = clickedItem;
-            pickedUpSlotIndex = clickedSlotIndex;
-            setItemStackInSlotIndex(clickedSlotIndex, ItemStack.EMPTY);
-        } else {
-            if (clickedItem.isEmpty()) {
-                setItemStackInSlotIndex(clickedSlotIndex, pickedUpItem);
-            } else {
-                setItemStackInSlotIndex(clickedSlotIndex, pickedUpItem);
+        PlayerInventory inventory = client.player.getInventory();
+
+        for (int row = 0; row < INVENTORY_ROWS; row++) {
+            for (int col = 0; col < INVENTORY_COLUMNS; col++) {
+                int x = startX + col * SLOT_SIZE;
+                int y = startY + row * SLOT_SIZE + 1;
+
+                if (row == INVENTORY_ROWS - 1) {
+                    y += 4;
+                }
+
+                if (isHovered(mouseX, mouseY, x + 1, y + 1)) {
+                    int index;
+                    if (row == INVENTORY_ROWS - 1) {
+                        index = col;
+                    } else {
+                        index = col + (row + 1) * INVENTORY_COLUMNS;
+                    }
+
+                    handleInventorySlotClick(inventory, index, isRightClick);
+                    return true;
+                }
             }
-            pickedUpItem = ItemStack.EMPTY;
-            pickedUpSlotIndex = -1;
         }
 
-        //TODO: Create client-server item sync
-        //syncSlotChange(pickedUpSlotIndex, clickedSlotIndex);
+        return false;
     }
 
-    private ItemStack getItemStackFromSlotIndex(int slotIndex) {
-        int tab = slotIndex / (ROWS * COLUMNS);
-        int slot = slotIndex % (ROWS * COLUMNS);
-
-        List<ItemStack> items = allTabItems.get(tab);
-        if (items != null && slot < items.size()) {
-            return items.get(slot);
+    private void handleInventorySlotClick(PlayerInventory inventory, int slotIndex, boolean isRightClick) {
+        if (slotIndex >= inventory.size()) {
+            return;
         }
-        return ItemStack.EMPTY;
-    }
 
-    private void setItemStackInSlotIndex(int slotIndex, ItemStack itemStack) {
-        int tab = slotIndex / (ROWS * COLUMNS);
-        int slot = slotIndex % (ROWS * COLUMNS);
+        ItemStack inventoryItem = inventory.getStack(slotIndex);
+        int serverSlotIndex;
+        if (slotIndex < 9) {
+            // Hotbar (slots 0-8 in inventory map to slots 81-89 in server)
+            serverSlotIndex = 54 + 27 + slotIndex;
+        } else {
+            // Main inventory (slots 9-35 in inventory map to slots 54-80 in server)
+            serverSlotIndex = 54 + (slotIndex - 9);
+        }
 
-        List<ItemStack> items = allTabItems.get(tab);
-        if (items != null && slot < items.size()) {
-            items.set(slot, itemStack);
+        System.out.println("Player slot: " + slotIndex + " -> Server slot: " + serverSlotIndex);
+
+        if (cursorStack.isEmpty()) {
+            // Picking up item from inventory
+            if (!inventoryItem.isEmpty()) {
+                cursorItemSourceTab = -1; // Mark as coming from inventory, not a bank tab
+
+                if (isRightClick) {
+                    int halfCount = (inventoryItem.getCount() + 1) / 2;
+                    cursorStack = inventoryItem.copy();
+                    cursorStack.setCount(halfCount);
+                    inventoryItem.decrement(halfCount);
+                    if (inventoryItem.getCount() <= 0) {
+                        inventory.setStack(slotIndex, ItemStack.EMPTY);
+                    }
+                } else {
+                    cursorStack = inventoryItem.copy();
+                    inventory.setStack(slotIndex, ItemStack.EMPTY);
+                }
+                isDraggingItem = true;
+
+                // Send pickup packet to server
+                enqueueTask(() -> {
+                    sendSlotClickToServer(serverSlotIndex, isRightClick);
+                });
+            }
+        } else {
+            // Placing item into inventory (existing logic)
+            final ItemStack cursorCopy = cursorStack.copy();
+            final ItemStack inventoryItemCopy = inventoryItem.copy();
+
+            enqueueTask(() -> {
+                int currentRevision = handler.getRevision();
+                sendSlotClickToServerWithRevision(serverSlotIndex, isRightClick, currentRevision);
+
+                MinecraftClient.getInstance().execute(() -> {
+                    if (inventoryItemCopy.isEmpty()) {
+                        if (isRightClick) {
+                            ItemStack singleItem = cursorCopy.copy();
+                            singleItem.setCount(1);
+                            inventory.setStack(slotIndex, singleItem);
+                            cursorStack.decrement(1);
+                            if (cursorStack.getCount() <= 0) {
+                                cursorStack = ItemStack.EMPTY;
+                                isDraggingItem = false;
+                                cursorItemSourceTab = -1;
+                            }
+                        } else {
+                            inventory.setStack(slotIndex, cursorCopy.copy());
+                            cursorStack = ItemStack.EMPTY;
+                            isDraggingItem = false;
+                            cursorItemSourceTab = -1;
+                        }
+                    } else if (ItemStack.areItemsAndComponentsEqual(cursorCopy, inventoryItemCopy)) {
+                        ItemStack currentInventoryItem = inventory.getStack(slotIndex);
+                        int spaceLeft = currentInventoryItem.getMaxCount() - currentInventoryItem.getCount();
+                        int toTransfer = isRightClick ? 1 : Math.min(spaceLeft, cursorStack.getCount());
+                        if (toTransfer > 0 && spaceLeft > 0) {
+                            currentInventoryItem.increment(toTransfer);
+                            cursorStack.decrement(toTransfer);
+                            if (cursorStack.getCount() <= 0) {
+                                cursorStack = ItemStack.EMPTY;
+                                isDraggingItem = false;
+                                cursorItemSourceTab = -1;
+                            }
+                        }
+                    } else if (!isRightClick) {
+                        ItemStack temp = inventory.getStack(slotIndex).copy();
+                        inventory.setStack(slotIndex, cursorCopy.copy());
+                        cursorStack = temp;
+                    }
+                });
+            });
         }
     }
 
-    private void syncSlotChange(int fromSlot, int toSlot) {
+    private void handleSlotClick(int tabIndex, int slotIndex, boolean isRightClick) {
+        List<ItemStack> items = allTabItems.get(tabIndex);
+        if (items == null || slotIndex >= items.size()) {
+            return;
+        }
+
+        ItemStack clickedItem = items.get(slotIndex);
+
+        if (cursorStack.isEmpty()) {
+            // Picking up item
+            if (!clickedItem.isEmpty()) {
+                cursorItemSourceTab = tabIndex;
+
+                // Update local state optimistically
+                if (isRightClick) {
+                    int halfCount = (clickedItem.getCount() + 1) / 2;
+                    cursorStack = clickedItem.copy();
+                    cursorStack.setCount(halfCount);
+
+                    clickedItem.setCount(clickedItem.getCount() - halfCount);
+                    if (clickedItem.getCount() <= 0) {
+                        items.set(slotIndex, ItemStack.EMPTY);
+                    }
+                } else {
+                    cursorStack = clickedItem.copy();
+                    items.set(slotIndex, ItemStack.EMPTY);
+                }
+                isDraggingItem = true;
+
+                // Sync with server: switch to tab and send click packet
+                final int serverSlotIndex = 9 + slotIndex;
+                enqueueTask(() -> {
+                    switchToTabAndClick(tabIndex, serverSlotIndex, isRightClick);
+                });
+            }
+        } else {
+            // Placing item back in bank
+            cursorItemSourceTab = tabIndex;
+
+            if (clickedItem.isEmpty()) {
+                if (isRightClick) {
+                    // Place one item
+                    ItemStack singleItem = cursorStack.copy();
+                    singleItem.setCount(1);
+                    items.set(slotIndex, singleItem);
+
+                    cursorStack.decrement(1);
+                    if (cursorStack.getCount() <= 0) {
+                        cursorStack = ItemStack.EMPTY;
+                        isDraggingItem = false;
+                        cursorItemSourceTab = -1;
+                    }
+                } else {
+                    // Place full stack
+                    items.set(slotIndex, cursorStack.copy());
+                    cursorStack = ItemStack.EMPTY;
+                    isDraggingItem = false;
+                    cursorItemSourceTab = -1;
+                }
+            } else if (ItemStack.areItemsAndComponentsEqual(cursorStack, clickedItem)) {
+                // Stacking items
+                if (isRightClick) {
+                    // Add one item to stack
+                    if (clickedItem.getCount() < clickedItem.getMaxCount()) {
+                        clickedItem.increment(1);
+                        cursorStack.decrement(1);
+                        if (cursorStack.getCount() <= 0) {
+                            cursorStack = ItemStack.EMPTY;
+                            isDraggingItem = false;
+                            cursorItemSourceTab = -1;
+                        }
+                    }
+                } else {
+                    // Merge stacks
+                    int spaceLeft = clickedItem.getMaxCount() - clickedItem.getCount();
+                    int toTransfer = Math.min(spaceLeft, cursorStack.getCount());
+
+                    clickedItem.increment(toTransfer);
+                    cursorStack.decrement(toTransfer);
+                    if (cursorStack.getCount() <= 0) {
+                        cursorStack = ItemStack.EMPTY;
+                        isDraggingItem = false;
+                        cursorItemSourceTab = -1;
+                    }
+                }
+            } else {
+                // Swap items (left click only)
+                if (!isRightClick) {
+                    ItemStack temp = clickedItem.copy();
+                    items.set(slotIndex, cursorStack.copy());
+                    cursorStack = temp;
+                }
+            }
+
+            final int serverSlotIndex = 9 + slotIndex;
+            enqueueTask(() -> {
+                switchToTabAndClick(tabIndex, serverSlotIndex, isRightClick);
+            });
+        }
+    }
+
+    private int getTabAtPosition(int mouseX, int mouseY) {
+        int startX = (width - GRID_WIDTH) / 2;
+        int startY = (height - GRID_HEIGHT) / 2;
+
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLUMNS; col++) {
+                int gridX = startX + (col) * (SLOT_SIZE * 9 + 5);
+                int gridY = (startY + (row) * (SLOT_SIZE * 5 + 5)) - 100;
+
+                // Check if mouse is in the tab area
+                if (mouseX >= gridX && mouseX < gridX + (SLOT_SIZE * 9) &&
+                        mouseY >= gridY && mouseY < gridY + (SLOT_SIZE * 5)) {
+                    return col + (row * 3);
+                }
+            }
+        }
+        return -1;
+    }
+
+    private void switchToTabAndClick(int tabIndex, int serverSlotIndex, boolean isRightClick) {
+        // Send tab switch packet
+        sendClickSlotPacket(tabIndex);
+
+        try {
+            // Wait for server to switch tabs
+            int ping = Objects.requireNonNull(Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler())
+                    .getPlayerListEntry(MinecraftClient.getInstance().player.getUuid())).getLatency();
+            int delay = Math.max(150 + (ping * 2), 200);
+            Thread.sleep(delay);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Now send the actual click on the item slot
+        sendSlotClickToServer(serverSlotIndex, isRightClick);
+    }
+
+    private void switchToTabWithItem(int tabIndex) {
+        // Store cursor item temporarily
+        ItemStack tempCursor = cursorStack.copy();
+
+        // Switch to new tab
+        switchToTab(tabIndex);
+
+        // Restore cursor item after switch
+        enqueueTask(() -> {
+            try {
+                Thread.sleep(200); // Wait for tab switch
+                cursorStack = tempCursor;
+                isDraggingItem = true;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void sendSlotClickToServerWithRevision(int slotIndex, boolean isRightClick, int revision) {
         if (client == null || client.getNetworkHandler() == null) {
             return;
         }
 
-        ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
-        ComponentChangesHash.ComponentHasher hasher = networkHandler.getComponentHasher();
-
+        ComponentChangesHash.ComponentHasher hasher = client.getNetworkHandler().getComponentHasher();
         Int2ObjectArrayMap<ItemStackHash> modifiedStacks = new Int2ObjectArrayMap<>();
+
         for (int i = 0; i < handler.slots.size(); i++) {
             modifiedStacks.put(i, ItemStackHash.fromItemStack(handler.slots.get(i).getStack(), hasher));
         }
@@ -464,25 +751,42 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
         Packet<?> packet = new ClickSlotC2SPacket(
                 syncId,
-                0,
-                (short) fromSlot,
-                (byte) 0,
+                revision,  // Use the passed revision
+                (short) slotIndex,
+                isRightClick ? (byte) 1 : (byte) 0,
                 SlotActionType.PICKUP,
                 modifiedStacks,
                 carriedItemHash
         );
-        networkHandler.sendPacket(packet);
 
-        packet = new ClickSlotC2SPacket(
+        client.getNetworkHandler().sendPacket(packet);
+    }
+
+    private void sendSlotClickToServer(int slotIndex, boolean isRightClick) {
+        if (client == null || client.getNetworkHandler() == null) {
+            return;
+        }
+
+        ComponentChangesHash.ComponentHasher hasher = client.getNetworkHandler().getComponentHasher();
+        Int2ObjectArrayMap<ItemStackHash> modifiedStacks = new Int2ObjectArrayMap<>();
+
+        for (int i = 0; i < handler.slots.size(); i++) {
+            modifiedStacks.put(i, ItemStackHash.fromItemStack(handler.slots.get(i).getStack(), hasher));
+        }
+
+        ItemStackHash carriedItemHash = ItemStackHash.fromItemStack(handler.getCursorStack(), hasher);
+
+        Packet<?> packet = new ClickSlotC2SPacket(
                 syncId,
-                0,
-                (short) toSlot,
-                (byte) 0,
+                handler.getRevision(),
+                (short) slotIndex,
+                isRightClick ? (byte) 1 : (byte) 0,
                 SlotActionType.PICKUP,
                 modifiedStacks,
                 carriedItemHash
         );
-        networkHandler.sendPacket(packet);
+
+        client.getNetworkHandler().sendPacket(packet);
     }
 
     private void sendClickSlotPacket(int slotIndex) {
@@ -564,5 +868,8 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
         tooltipItemIndex = -1;
         allTabItems.clear();
         lockedTabs.clear();
-    }
-}
+
+        cursorStack = ItemStack.EMPTY;
+        isDraggingItem = false;
+        cursorItemSourceTab = -1;
+    }}

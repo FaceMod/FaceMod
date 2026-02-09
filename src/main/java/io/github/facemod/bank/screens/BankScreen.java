@@ -59,9 +59,6 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
     // Item Storage
     private static final Map<Integer, List<ItemStack>> allTabItems = new HashMap<>();
-    private static ItemStack pickedUpItem = ItemStack.EMPTY;
-    private static int pickedUpSlotIndex = -1;
-
 
     // UI Components
     ButtonWidget guildVaultButton = null;
@@ -524,9 +521,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
                 isDraggingItem = true;
 
                 // Send pickup packet to server
-                enqueueTask(() -> {
-                    sendSlotClickToServer(serverSlotIndex, isRightClick);
-                });
+                enqueueTask(() -> sendSlotClickToServer(serverSlotIndex, isRightClick));
             }
         } else {
             // Placing item into inventory (existing logic)
@@ -609,9 +604,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
 
                 // Sync with server: switch to tab and send click packet
                 final int serverSlotIndex = 9 + slotIndex;
-                enqueueTask(() -> {
-                    switchToTabAndClick(tabIndex, serverSlotIndex, isRightClick);
-                });
+                enqueueTask(() -> switchToTabAndClick(tabIndex, serverSlotIndex, isRightClick));
             }
         } else {
             // Placing item back in bank
@@ -673,9 +666,7 @@ public class BankScreen extends HandledScreen<ScreenHandler> {
             }
 
             final int serverSlotIndex = 9 + slotIndex;
-            enqueueTask(() -> {
-                switchToTabAndClick(tabIndex, serverSlotIndex, isRightClick);
-            });
+            enqueueTask(() -> switchToTabAndClick(tabIndex, serverSlotIndex, isRightClick));
         }
     }
 
